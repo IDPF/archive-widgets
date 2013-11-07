@@ -1,0 +1,34 @@
+<!--  
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<widget>
+	<name>Multiple Choice Quiz Widget</name>
+	<label>Multiple Choice Quiz</label>
+	<description>Create multiple choice or true/false quizzes easily.</description>
+	<version>0.1</version>
+	<id>EPUB_WIDGET_QUIZ_MULTI_CHOICE</id>
+	<author url="http://www.metrodigi.com">Metrodigi</author>
+	<license url="http://opensource.org/licenses/MIT">MIT License</license>
+	<help url="http://widgets.chaucercloud.com/help">Get help for this widget at www.chaucercloud.com</help>
+	
+	<files>
+		<filename resource="book" import="true" init-script="true">quiz-multiple-choice.js</filename>
+		<filename resource="book" import="true">quiz-multiple-choice.css</filename>
+		<filename resource="book" type="shared">external/mootools-core-1.4.5-full-nocompat-yc.js</filename>
+		<filename resource="book" type="shared">external/mootools-more-1.4.0.1-yc.js</filename>
+		<filename resource="book" type="shared">mootools-drag-touch.js</filename>
+		<filename resource="book" type="shared">common.js</filename>
+	</files>
+
+	<params>
+		<param key="compatibility">
+			<access booktype="Reflowable">true</access>
+			<access booktype="FixedLayout">true</access>
+		</param>
+	</params>
+</widget>

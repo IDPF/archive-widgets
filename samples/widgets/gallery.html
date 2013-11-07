@@ -1,0 +1,53 @@
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Gallery Sample</title>
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		
+		<script type="text/javascript" src="../../package/widgets/gallery/book/gallery.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/gallery/book/gallery.css">
+		
+		<link rel="stylesheet" type="text/css" href="../shared/css/common.sample.css">
+		<script type="text/javascript">
+			window.addEvent('domready', function () {
+				new epubWidget.Gallery($("sample"),
+					{options:{
+						"delay":4000,
+						"autoplay":false,
+						"transition":"fade"
+					}},
+					undefined,
+					{
+						"size":{"height":"500","width":"600"},
+						"images":[{"id":"89437","src":"../shared/images/gallery/image-1.png"}, {"id":"89438","src":"../shared/images/gallery/image-2.png"},
+							{"id":"89439","src":"../shared/images/gallery/image-3.png"}, {"id":"89440","src":"../shared/images/gallery/image-4.png"},
+							{"id":"89441","src":"../shared/images/gallery/image-5.png"}, {"id":"89442","src":"../shared/images/gallery/image-6.png"}],
+						"thumbnails":true,
+						"clickToNext":false
+					}
+				);
+			});
+		</script>
+	</head>
+
+	<body>
+		<h3>Gallery Sample</h3>
+		<div id="sample"></div>
+	</body>
+</html>

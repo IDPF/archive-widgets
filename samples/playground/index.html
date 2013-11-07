@@ -1,0 +1,94 @@
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Playground</title>
+		<link href="../shared/css/bootstrap.min.css" rel="stylesheet">
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/captionator-min.js"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+
+		<script type="text/javascript" src="../../package/widgets/audio/book/audio.js"></script>
+		<script type="text/javascript" src="../../package/widgets/video/book/video.js"></script>
+		<script type="text/javascript" src="../../package/widgets/text-resizer/book/text-resizer.js"></script>
+		<script type="text/javascript" src="../../package/widgets/gallery/book/gallery.js"></script>
+		<script type="text/javascript" src="../../package/widgets/scrolling-sidebar/book/scrolling-sidebar.js"></script>
+		<script type="text/javascript" src="../../package/widgets/quiz-multiple-choice/book/quiz-multiple-choice.js"></script>
+		<script type="text/javascript" src="../../package/widgets/popup/book/popup.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/audio/book/audio.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/video/book/video.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/text-resizer/book/text-resizer.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/gallery/book/gallery.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/scrolling-sidebar/book/scrolling-sidebar.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/quiz-multiple-choice/book/quiz-multiple-choice.css">
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/popup/book/popup.css">
+		
+		<script type="text/javascript" src="app.js"></script>
+
+	</head>
+
+	<body>
+		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">Widget Playground</a>
+				</div>
+				<div class="collapse navbar-collapse">
+					<ul class="nav navbar-nav">
+					</ul>
+				</div><!-- /.nav-collapse -->
+			</div><!-- /.container -->
+		</div><!-- /.navbar -->
+
+		<div class="container">
+			<div class="row row-offcanvas row-offcanvas-right">
+				<div class="col-xs-12 col-sm-9">
+					<p class="pull-right visible-xs">
+						<button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+					</p>
+					<div class="row">
+						<div class="col-xs-12 col-sm-12" id="code-view">
+							<p>Widget initialization code:</p>
+							<div id="code" contenteditable="true"></div>
+							<button type="button" class="btn btn-primary btn-xs preview">Run</button>
+						</div>
+
+						<div class="col-xs-12 col-sm-12" id="preview-view">
+							<p>Widget preview area.</p>
+						</div><!--/span-->
+					</div><!--/row-->
+				</div><!--/span-->
+
+				<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar" role="navigation">
+					<div class="list-group" id="widget-list">
+						
+					</div>
+				</div><!--/span-->
+			</div><!--/row-->
+			<hr>
+		</div><!--/.container-->
+	</body>
+</html>

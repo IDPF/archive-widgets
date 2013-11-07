@@ -1,0 +1,1 @@
+Add custom resizing options with this text resizer.

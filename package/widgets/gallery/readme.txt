@@ -1,0 +1,1 @@
+Create beautiful galleries or interactive image sequences with this widget.

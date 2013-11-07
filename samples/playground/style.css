@@ -1,0 +1,81 @@
+/*
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+*/
+
+html {
+	overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+body {
+	padding-top: 50px;
+}
+.navbar {
+	min-height: 30px;
+}
+.navbar-brand {
+	padding: 8px 15px;
+}
+a {
+	cursor: pointer;
+}
+blockquote small:before {
+	content: "";
+}
+/*
+ * Off Canvas
+ * --------------------------------------------------
+ */
+@media screen and (max-width: 767px) {
+	.row-offcanvas {
+		position: relative;
+		-webkit-transition: all 0.25s ease-out;
+		-moz-transition: all 0.25s ease-out;
+		transition: all 0.25s ease-out;
+	}
+	.row-offcanvas-right
+	.sidebar-offcanvas {
+		right: -50%; /* 6 columns */
+	}
+	.row-offcanvas-left
+	.sidebar-offcanvas {
+		left: -50%; /* 6 columns */
+	}
+	.row-offcanvas-right.active {
+		right: 50%; /* 6 columns */
+	}
+	.row-offcanvas-left.active {
+		left: 50%; /* 6 columns */
+	}
+	.sidebar-offcanvas {
+		position: absolute;
+		top: 0;
+		width: 50%; /* 6 columns */
+	}
+}
+
+#code-view {
+	background-color: #DDD;
+	color: #666;
+	padding: 10px;
+}
+#code-view #code {
+	font-family: "Courier New", Courier, monospace;
+	min-height: 150px;
+	border: 1px solid #CCC;
+	font-size: 13px;
+	margin: 10px 0;
+	background-color: #EEE;
+}
+#preview-view {
+	margin: 10px 0;
+	padding: 10px;
+	border: 1px solid #CCC;
+	min-height: 330px;
+}
+
+video {
+	width: 450px;
+}

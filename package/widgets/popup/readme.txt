@@ -1,0 +1,1 @@
+Popups are a handy way to add glossary definitions or additional information to your book content.

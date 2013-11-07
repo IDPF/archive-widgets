@@ -1,0 +1,46 @@
+
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Text Resizer Sample</title>
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		
+		<script type="text/javascript" src="../../package/widgets/text-resizer/book/text-resizer.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/text-resizer/book/text-resizer.css">
+		
+		<link rel="stylesheet" type="text/css" href="../shared/css/common.sample.css">
+		<script type="text/javascript">
+			window.addEvent('domready', function () {
+				new epubWidget.TextResizer($('sample'), {target: $('sample-content')});
+			});
+		</script>
+	</head>
+
+	<body>
+		<h3>Text Resizer Sample</h3>
+		<div id="sample"></div>
+		<hr/>
+		<div id="sample-content">
+			<h2>Why Asimov?</h2>
+			<p>Widely considered to be the greatest science fiction writer of all time, Isaac Asimov wrote a series of books titled the Foundation series where he described the possibility of using the laws of “mass action” to predict mankind’s future with near 100% certainty. But this requires taking all mankind in the entire galaxy into consideration to achieve the 100% certainty.</p>
+
+			<p>Therefore, the more contributions given to the widget framework, no matter how small or large, the better we will be able to plan our collective eBook future. This means more reliability, more stability, and more device support.</p>
+		</div>
+	</body>
+</html>

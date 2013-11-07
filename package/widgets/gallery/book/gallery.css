@@ -1,0 +1,68 @@
+/*
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+*/
+
+.epubWidget-gallery{
+	margin-bottom: 30px;
+}
+.epubWidget-gallery .main-image-outer{
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+	text-align: center;
+	background: #ffffff;
+	margin-top: 20px;
+	border: #d5d5d5 solid 1px;
+}
+.epubWidget-gallery .main-image-inner{
+	height: 100%;
+}
+.epubWidget-gallery .wraptocenter {
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+	width: 400px;
+	height: 400px;
+}
+.epubWidget-gallery .wraptocenter * {
+	vertical-align: middle;
+}
+.epubWidget-gallery .main-image-inner .slide-wrapper{
+	width: auto;
+	max-width: 100%;
+	max-height: 100%;
+	display: table-cell;
+	text-align: center;
+	vertical-align: middle;
+}
+.epubWidget-gallery .main-image-inner img{
+	max-width: 100%;
+	max-height: 100%;
+}
+.epubWidget-gallery .thumb-wrapper-outer{
+	height: 80px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	border: #ccc solid 1px;
+	border-top: none;
+	background: #DDD;
+	border-radius: 0 0 4px 4px;
+	padding: 5px;
+	position: relative;
+}
+.epubWidget-gallery .thumb-wrapper-inner{
+	white-space: nowrap;
+	height: 80px;
+}
+.epubWidget-gallery .thumb-wrapper-inner img{
+	position: relative;
+	height: 100%;
+	width: auto;
+	display: inline-block;
+	margin-right: 10px;
+	zoom: 1;
+}

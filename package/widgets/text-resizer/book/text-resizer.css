@@ -1,0 +1,41 @@
+/*
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+*/
+
+.epubWidget-text-resizer .text-zoom-controls {
+	padding: 0;
+	margin: 0;
+}
+.epubWidget-text-resizer .text-zoom-controls .zoom-action {
+	float: left;
+	width: 32px;
+	height: 32px;
+	text-align: center;
+	cursor: pointer;
+	text-indent:-9999px;
+}
+.epubWidget-text-resizer .text-zoom-controls .zoom-action+.zoom-action {
+	margin-left: 7px;
+}
+.epubWidget-text-resizer .text-zoom-controls .zoom-in {
+	background-image: url("images/zoom-in.png");
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 32px;
+}
+.epubWidget-text-resizer .text-zoom-controls .zoom-out {
+	background-image: url("images/zoom-out.png");
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 32px;
+}
+.epubWidget-text-resizer .text-zoom-controls .zoom-reset {
+	background-image: url("images/reset.png");
+	background-position: 0 0;
+	background-repeat: no-repeat;
+	background-size: 32px;
+}

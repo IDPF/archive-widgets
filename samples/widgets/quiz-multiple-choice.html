@@ -1,0 +1,64 @@
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Quiz Multiple Choice Sample</title>
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		
+		<script type="text/javascript" src="../../package/widgets/quiz-multiple-choice/book/quiz-multiple-choice.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/quiz-multiple-choice/book/quiz-multiple-choice.css">
+		
+		<link rel="stylesheet" type="text/css" href="../shared/css/common.sample.css">
+		<script type="text/javascript">
+			window.addEvent('domready', function () {
+				new epubWidget.QuizMultipleChoice($("sample"),{
+					"persist":false,
+					"generateHTML":true,
+					"questionData": {
+						"correctMsg":"Correct! You answered correctly. Good job.",
+						"incorrectMsg":"Sorry! This is not the correct answer.",
+						"questions":[
+							{"text":"Isaac Asimov was a science fiction writer.",
+							"options":[
+								{"text":"True","correct":true,"order":1},
+								{"text":"False","correct":false,"order":2}
+							],"order":1},
+							{"text":"Isaac Asimov was born in",
+							"options":[
+								{"text":"Brooklyn, New York","correct":false,"order":1},
+								{"text":"Smiljan, Croatia","correct":false,"order":2},
+								{"text":"Smolensk Oblast, Russia","correct":true,"order":3}
+							],"order":2},
+							{"text":"Which of these novels did Isaac Asimov write?",
+							"options":[
+								{"text":"Stranger in a Strange Land","correct":false,"order":1},
+								{"text":"The Fountains of Paradise","correct":false,"order":2},
+								{"text":"Lucky Starr and the Pirates of the Asteroids","correct":true,"order":3}
+							],"order":3}
+						]
+					}
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<h3>Quiz Multiple Choice Sample</h3>
+		<div id="sample"></div>
+	</body>
+</html>

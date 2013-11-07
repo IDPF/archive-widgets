@@ -1,0 +1,111 @@
+/*
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+*/
+
+.epubWidget-quiz-multiple-choice .quiz-wrapper{
+	padding: 20px 20px 10px;
+	margin: 0;
+	background: #f8f8f8;
+	border: #d5d5d5 solid 1px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.epubWidget-quiz-multiple-choice .question-wrapper{
+	margin-bottom: 10px;
+	list-style-type: none;
+	padding: 0 0 10px 0;
+}
+.epubWidget-quiz-multiple-choice .question-text{
+	font-size: 1em;
+	line-height: 1.8em;
+	font-weight: bold;
+	cursor: default;
+	-webkit-margin-before: 0;
+	-webkit-margin-after: 0;
+}
+.epubWidget-quiz-multiple-choice .options-wrapper{
+	list-style-type: none;
+	padding: 0;
+}
+
+.epubWidget-quiz-multiple-choice .order{
+	font-weight: bold;
+}
+.epubWidget-quiz-multiple-choice .order:after{
+	content: ".";
+}
+.epubWidget-quiz-multiple-choice .question-option{
+	padding: 1px 10px;
+	font-size: .9em;
+	line-height: 1.8em;
+	cursor: pointer;
+}
+.epubWidget-quiz-multiple-choice .question-option:hover{
+	text-decoration: underline;
+}
+.epubWidget-quiz-multiple-choice .question-option.incorrectAnswer{
+	padding: 0 9px;
+	font-weight: bold;
+	background: #fae6e6;
+	border:red solid 1px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.epubWidget-quiz-multiple-choice .question-option.correctAnswer{
+	padding: 0 9px;
+	font-weight: bold;
+	background: #e8fae6;
+	border: green solid 1px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.epubWidget-quiz-multiple-choice .question-option.incorrectAnswer:hover,
+.epubWidget-quiz-multiple-choice .question-option.correctAnswer:hover{
+	cursor:default;
+}
+.epubWidget-quiz-multiple-choice .inline-message{
+	display:inline-block;
+	margin: 10px 0;
+	padding: 5px;
+	width: 100%;
+	text-align:center;border-radius: 5px;
+	-webkit-border-radius: 5px;
+}
+.epubWidget-quiz-multiple-choice blockquote small{
+	color: black;
+}
+.epubWidget-quiz-multiple-choice .inline-message.quiz-correct{
+	background: #e8fae6;
+	border: green solid 1px;
+}
+.epubWidget-quiz-multiple-choice .inline-message.quiz-incorrect{
+	background: #fae6e6;
+	border: red solid 1px;
+}
+.epubWidget-quiz-multiple-choice .alert-message{
+	width: 580px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin: -80px 0 0 -301px;
+	text-align: center;
+	background: #e8fae6;
+	border: green solid 1px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 5px 10px;
+	font-size: 1em;
+	line-height: 1em;
+}
+.epubWidget-quiz-multiple-choice .alert-message.error{
+	background: #fae6e6;
+	border-color: red;
+}
+.epubWidget-quiz-multiple-choice .alert-message p{
+	padding: 0;
+	margin: 0;
+}

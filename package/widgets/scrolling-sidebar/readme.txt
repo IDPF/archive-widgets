@@ -1,0 +1,1 @@
+Scrolling sidebars enable you to have a lot of text and images in a small area on a page.

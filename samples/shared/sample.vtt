@@ -1,0 +1,13 @@
+WEBVTT
+
+1
+00:00:01.000 --> 00:00:03.500
+First short caption
+
+2
+00:00:05.000 --> 00:00:15.000
+<b>Second</b> line of text, <i>displayed for 10 seconds starting from 3</i>
+
+3
+00:00:20.000 --> 00:00:25.000
+Third caption 

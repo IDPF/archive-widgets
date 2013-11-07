@@ -1,0 +1,40 @@
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Scrolling Sidebar Sample</title>
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		
+		<script type="text/javascript" src="../../package/widgets/scrolling-sidebar/book/scrolling-sidebar.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/scrolling-sidebar/book/scrolling-sidebar.css">
+		
+		<link rel="stylesheet" type="text/css" href="../shared/css/common.sample.css">
+		<script type="text/javascript">
+			window.addEvent('domready', function () {
+				new epubWidget.ScrollingSidebar($('sample'), {header: 'Coined Words', footer: 'Now You Know', content: 'Asimov coined the term "robotics" in his 1941 story Liar!, though he later remarked that he believed then that he was merely using an existing word, as he stated in Gold ("The Robot Chronicles"), though while acknowledging the Oxford Dictionary reference, he incorrectly states that the word was first printed about one third of the way down the first column of page 100, <em>Astounding Science Fiction</em>, March 1942 printing of his short story "Runaround".', width: 250, height: 200});
+			});
+		</script>
+	</head>
+
+	<body>
+		<h3>Scrolling Sidebar Sample</h3>
+		<div id="sample"></div>
+	</body>
+</html>

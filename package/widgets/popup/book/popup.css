@@ -1,0 +1,126 @@
+/*
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+*/
+
+.epubWidget-mask {
+	background-color: rgba(0, 0, 0, 0.5);
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 1000;
+}
+.epubWidget-modal {
+	top: 50%;
+	left: 50%;
+	z-index: 2000;
+	min-width: 200px;
+	background-color: #ffffff;
+	border: 1px solid #999;
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	border:black solid 1px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding-box;
+	background-clip: padding-box;
+	font-family: Arial, Helvetica, sans-serif;
+}
+.epubWidget-modal .modal-header{
+	border-bottom: 1px solid #eee;
+	padding: 9px 20px 6px 20px;
+	font-size: 26px;
+	background-color: #f5f5f5;
+	background-color: #fff; 
+	-moz-border-radius: 5px 5px 0 0;
+	-webkit-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0; 
+}
+.epubWidget-modal .modal-header h4{
+	-webkit-margin-before: 0;
+	-webkit-margin-after: 0;
+}
+.epubWidget-modal .close {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	color: #999;
+	line-height: 10px;
+	font-size: 18px;
+	padding: 5px;
+}
+.epubWidget-modal .modal-body {
+	/* uncomment if book is KF8 */
+	/* overflow: auto;*/
+	min-height: 40px;
+	padding: 20px;
+	word-wrap: break-word;
+	overflow: auto;
+}
+.epubWidget-modal .modal-body p{
+	padding-bottom:.5em;
+}
+
+/* Default font style for popup content */
+.epubWidget-modal .modal-body p, .epubWidget-modal .modal-body div {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #000000;
+}
+.epubWidget-modal .modal-footer {
+	background-color: #f5f5f5;
+	padding: 14px 30px 15px;
+	border-top: 1px solid #ddd;
+	-webkit-border-radius: 0 0 5px 5px;
+	-moz-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+	-webkit-box-shadow: inset 0 1px 0 #ffffff;
+	-moz-box-shadow: inset 0 1px 0 #ffffff;
+	box-shadow: inset 0 1px 0 #ffffff;
+	zoom: 1;
+	margin-bottom: 0;
+	-moz-border-radius: 0 0 5px 5px;
+	-webkit-border-radius: 0 0 5px 5px;
+	border-radius: 0 0 5px 5px;
+}
+.epubWidget-modal .modal-footer:before, .epubWidget-modal .modal-footer:after {
+	display: table;
+	content: "";
+}
+.epubWidget-modal .modal-footer:after {
+  clear: both;
+}
+.epubWidget-modal .modal-footer .btn {}
+.epubWidget-modal .modal-footer .btn.primary { 
+	font-size:14px;
+	line-height:14px;
+	display: block;
+	padding:7px 0 5px 0;
+	text-align: center;
+	text-decoration:none;
+	-moz-border-radius:4`x;
+	-webkit-border-radius:4px;
+	border-radius:4px; 
+	cursor:pointer;
+	border:black solid 1px;
+	color: #black;
+	background: #ffffff;
+	background: -moz-linear-gradient(top, #ffffff 0%, #e9e9e9 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e9e9e9));
+	background: -webkit-linear-gradient(top, #ffffff 0%,#e9e9e9 100%);
+	background: -o-linear-gradient(top, #ffffff 0%,#e9e9e9 100%);
+	background: -ms-linear-gradient(top, #ffffff 0%,#e9e9e9 100%);
+	background: linear-gradient(to bottom, #ffffff 0%,#e9e9e9 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e9e9e9',GradientType=0 );
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #0064cd #0064cd #003f81;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}

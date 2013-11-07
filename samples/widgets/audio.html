@@ -1,0 +1,40 @@
+<!--
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>IDPF Widgets - Audio Sample</title>
+		
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-core-1.4.5-full-nocompat-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/external/mootools-more-1.4.0.1-yc.js"></script>
+		<script type="text/javascript" src="../../package/book-shared/common.js"></script>
+		
+		<script type="text/javascript" src="../../package/widgets/audio/book/audio.js"></script>
+		<link rel="stylesheet" type="text/css" href="../../package/widgets/audio/book/audio.css">
+		<link rel="stylesheet" type="text/css" href="../shared/css/common.sample.css">
+		
+		<script type="text/javascript">
+			window.addEvent('domready', function () {
+				new epubWidget.Audio($('sample'), 'http://www.tonycuffe.com/mp3/cairnomount.mp3', {
+					autoPlay: true
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<h3>Audio Sample</h3>
+		<div id="sample"></div>
+	</body>
+</html>

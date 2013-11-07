@@ -1,0 +1,37 @@
+<!--  
+
+IDPF ePub Widget Framework
+MIT License
+Demos: http://widgets.chaucercloud.com
+
+-->
+<?xml version="1.0" encoding="utf-8"?>
+<widget>
+	<name>Scrolling Sidebar Widget</name>
+	<label>Scrolling Sidebar</label>
+	<description>Scrolling sidebars enable you to have a lot of text and images in a small area on a page.</description>
+	<version>0.1</version>
+	<id>EPUB_WIDGET_SIDEBAR</id>
+	<author url="http://www.metrodigi.com">Metrodigi</author>
+	<license url="http://opensource.org/licenses/MIT">MIT License</license>
+	<help url="http://widgets.chaucercloud.com/help">Get help for this widget at www.chaucercloud.com</help>
+	
+	<files>
+		<filename resource="book" import="true" init-script="true">scrolling-sidebar.js</filename>
+		<filename resource="book" import="true">scrolling-sidebar.css</filename>
+		<filename resource="book" shared="true">external/mootools-core-1.4.5-full-nocompat-yc.js</filename>
+		<filename resource="book" shared="true">external/mootools-more-1.4.0.1-yc.js</filename>
+		<filename resource="book" shared="true">mootools-drag-touch.js</filename>
+		<filename resource="book" shared="true">common.js</filename>
+	</files>
+	
+	<params>
+		<param key="compatibility">
+			<access booktype="Reflowable">true</access>
+			<access booktype="FixedLayout">true</access>
+		</param>
+		<param key="editor">
+			<dimensions width="740" height="660"/>
+		</param>
+	</params>
+</widget>
