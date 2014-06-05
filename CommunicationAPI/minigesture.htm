@@ -9,7 +9,7 @@
         #timer {
             text-align: center;
             font-size: 36px;
-            margin: 50px;
+            margin: 20px;
             border: 1px solid blue;
         }
 
@@ -37,7 +37,7 @@
         var eventButton = document.getElementById("event");
 
         eventButton.addEventListener("click", function (e) {
-            window.TopicPublish("event", "capture phase click:" + eventCounter++);
+            window.TopicPublish("event", "capture phase click:" + eventCounter++ + " - " + window.widgetID);
         }, true);
     </script>
 </body>

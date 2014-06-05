@@ -13,42 +13,42 @@
         #timerIframe {
             position: absolute;
             top: 50px;
-            left: 20px;
+            left: 710px;
             width: 400px;
-            height: 500px;
+            height: 200px;
             border: 2px solid silver;
         }
 
         #compositionIframe {
             position: absolute;
             top: 50px;
-            left: 470px;
+            left: 20px;
             width: 670px;
-            height: 500px;
+            height: 350px;
             border: 2px solid silver;
         }
 
         #compositionIframe2 {
             position: absolute;
-            top: 50px;
-            left: 1200px;
+            top: 420px;
+            left: 20px;
             width: 670px;
-            height: 500px;
+            height: 350px;
             border: 2px solid silver;
         }
 
         #miniwidget2 {
             position: absolute;
-            top: 50px;
-            left: 1900px;
-            width: 670px;
-            height: 500px;
+            top: 420px;
+            left: 710px;
+            width: 300px;
+            height: 200px;
             border: 2px solid silver;
         }
 
         #controls {
             position: absolute;
-            top: 580px;
+            top: 800px;
             left: 20px;
             width: 1000px;
             border: 2px solid red;
@@ -133,7 +133,7 @@
       var push = document.getElementById("push");
       
       push.addEventListener("click", function (e) {
-              window.TopicPublish("data", new Date());
+              window.TopicPublish("data", "<b style='color:red;'>" + new Date() + "</b>");
       }, false);
       
    </script>
