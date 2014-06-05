@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Widget</title>
+    <script src="widget_api.js"></script>
+    <script src="pause.js"></script>
+    <link type="text/css" rel="stylesheet" href="status.css">
+    <style>
+        #timer {
+            text-align: center;
+            font-size: 36px;
+            margin: 50px;
+            border: 1px solid blue;
+        }
+
+        #eventdiv {
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="source">src</div>
+    <div id="status">No status</div>
+    <div id="timer"></div>
+
+    <div id="eventdiv">
+        <span>Event Topic: </span>
+        <input id="event" type="button" name="Event" value="Click Event">
+    </div>
+
+    <script src="timer.js"></script>
+    <script>
+        var eventCounter = 0;
+        var eventButton = document.getElementById("event");
+
+        eventButton.addEventListener("click", function (e) {
+            window.TopicPublish("event", "capture phase click:" + eventCounter++);
+        }, true);
+    </script>
+</body>
+</html>

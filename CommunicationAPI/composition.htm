@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Composition</title>
+    <script src="widget_api.js"></script>
+    <script src="pause.js"></script>
+    <link type="text/css" rel="stylesheet" href="status.css">
+    <style>
+        #timerIframe {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            width: 300px;
+            height: 300px;
+            border: 2px solid silver;
+        }
+
+        #gestureIframe {
+            position: absolute;
+            top: 50px;
+            left: 340px;
+            width: 300px;
+            height: 300px;
+            border: 2px solid silver;
+        }
+
+        #timer {
+            position: absolute;
+            top: 350px;
+            left: 200px;
+            text-align: center;
+            font-size: 36px;
+            margin: 50px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+<body>
+    <div id="source">src</div>
+    <div id="status">No status</div>
+
+    <iframe epub:type="widget" class="widget" id="timerIframe" src="miniwidget.htm"></iframe>
+    <iframe epub:type="widget" class="widget" id="gestureIframe" src="minigesture.htm"></iframe>
+
+    <div id="timer"></div>
+    <script src="timer.js"></script>
+</body>
+</html>

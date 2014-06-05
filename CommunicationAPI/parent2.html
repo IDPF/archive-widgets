@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent</title>
+    <!-- widget communication code -->
+    <script src="widget_api.js"></script>
+
+    <!-- page implementation code -->
+    <script src="pause.js"></script>
+
+    <link href="status.css" type="text/css" rel="stylesheet">
+    <style>
+        #compositionIframe2 {
+            position: absolute;
+            top: 50px;
+            left: 20px;
+            width: 670px;
+            height: 500px;
+            border: 2px solid silver;
+        }
+
+        #controls {
+            position: absolute;
+            top: 580px;
+            left: 20px;
+            width: 1000px;
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+        }
+
+        .method {
+            border: 2px solid black;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="source">src</div>
+    <div id="status">No status</div>
+
+
+    <iframe epub:type="widget" class="widget" id="compositionIframe2" src="composition2.htm"></iframe>
+
+    <div id="controls" style="padding:10px;">
+        <div class="method">
+            <span>State Topic: all</span>
+            <input id="pause" type="button" name="Pause" value="Pause">
+            <span style="margin-left:30px;">compostion.htm</span>
+            <input id="pause_individual" type="button" name="Pause_individual" value="Pause">
+        </div>
+        <div class="method">
+            <span>Push Data Topic: miniwidget.htm & compostion.htm</span>
+            <input id="push" type="button" name="Push" value="Push">
+        </div>
+    </div>
+
+    <script>
+        /* subscribe to the event call */
+        window.TopicSubscribe("event", function (msg) {
+            var e = document.getElementById("status");
+            e.innerHTML = msg;
+        });
+
+        /* code for controls */
+        var pause = document.getElementById("pause");
+        var running = true;
+
+        pause.addEventListener("click", function (e) {
+            if (running === true)
+            {
+                window.TopicPublish("pause", "pause");
+                running = false;
+                pause.setAttribute("value", "Resume");
+                pause_individual.setAttribute("value", "Resume");
+            }
+            else
+            {
+                window.TopicPublish("pause", "resume");
+                pause.setAttribute("value", "Pause");
+                pause_individual.setAttribute("value", "Pause");
+                running = true;
+            }
+        }, false);
+
+        var pause_individual = document.getElementById("pause_individual");
+
+        pause_individual.addEventListener("click", function (e) {
+            var iframe = document.getElementById("compositionIframe");
+            var state = pause_individual.getAttribute("value");
+            if (state === "Pause")
+            {
+                window.TopicSend(iframe.contentWindow, "pause", "pause");
+                pause_individual.setAttribute("value", "Resume");
+            }
+            else
+            {
+                window.TopicSend(iframe.contentWindow, "pause", "resume");
+                pause_individual.setAttribute("value", "Pause");
+            }
+        }, false);
+
+        var push = document.getElementById("push");
+
+        push.addEventListener("click", function (e) {
+            window.TopicPublish("data", new Date());
+        }, false);
+
+    </script>
+    <script src="timer.js"></script>
+</body>
+</html>
