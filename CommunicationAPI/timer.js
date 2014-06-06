@@ -11,7 +11,7 @@ function handlePause(msg) {
 
     if (msg === "pause")
     {
-        e.innerHTML = "Paused";
+        e.innerHTML = "Topic: [paused]";
 
         if (timer && timerid !== null)
         {
@@ -21,7 +21,7 @@ function handlePause(msg) {
     }
     else
     {
-        e.innerHTML = "Running";
+        e.innerHTML = "Topic: [running]";
         if (timer && timerid == null)
         {
             timerid = window.setInterval(function () {

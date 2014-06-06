@@ -141,7 +141,7 @@ window.TopicPublish = function (topicName, data) {
         window.TopicMap_[topicName].handler(message.payload.message);
     }
 
-		/* send to children */
+    /* send to children */
     /* TODO: figure out how to call querySelector on epub:type="widget" */
     var widgets = window.document.querySelectorAll(".widget");
 
