@@ -14,6 +14,15 @@ in domains preventing XSS.
         3. Document for standards doc - message schema, topic names, 
            use of sendMessage, expected behaviors
 
+### Samples
+    to run:
+        node server.js - starts up a local http server on 8080
+        load localhost/parent.html - to see a set of widgets that are communicating
+           with the code in widget_api.js
+
+    the samples are a work in progress...
+
+    caveat emptor - the samples has primarily been tested on mac chrome 35
 
 ### Coding standards
 
