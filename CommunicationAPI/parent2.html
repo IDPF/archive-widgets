@@ -54,7 +54,7 @@
 
     <script>
         /* subscribe to the event call */
-        window.TopicSubscribe("event", function (msg) {
+        wapi.subscribe("event", function (msg) {
             var e = document.getElementById("status");
             e.innerHTML = msg;
         });
@@ -66,13 +66,13 @@
         pause.addEventListener("click", function (e) {
             if (running === true)
             {
-                window.TopicPublish("pause", "pause");
+                wapi.publish("pause", "pause");
                 running = false;
                 pause.setAttribute("value", "Resume");
             }
             else
             {
-                window.TopicPublish("pause", "resume");
+                wapi.publish("pause", "resume");
                 pause.setAttribute("value", "Pause");
                 running = true;
             }
@@ -81,7 +81,7 @@
         var push = document.getElementById("push");
 
         push.addEventListener("click", function (e) {
-                window.TopicPublish("data", "<b style='color:red;'>" + new Date() + "</b>");            
+                wapi.publish("data", "<b style='color:red;'>" + new Date() + "</b>");            
         }, false);
 
     </script>

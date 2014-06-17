@@ -2,6 +2,6 @@
  * Sample code.
  */
 
-window.TopicSubscribe("pause", function (msg) {
+wapi.subscribe("pause", function (msg) {
     handlePause(msg);
 });

@@ -32,7 +32,7 @@
             data.innerHTML = msg;
         }
 
-        window.TopicSubscribe("data", handleData);
+        wapi.subscribe("data", handleData);
 
         var subscribed = true;
         var button = document.getElementById("unsubscribe");
@@ -41,13 +41,13 @@
             {
                 subscribed = false;
                 button.setAttribute("value", "Subscribe");
-                window.TopicUnsubscribe("pause");
+                wapi.unsubscribe("pause");
             }
             else
             {
                 subscribed = true;
                 button.setAttribute("value", "Unsubscribe");
-                window.TopicSubscribe("pause", function (msg) {
+                wapi.subscribe("pause", function (msg) {
                     handlePause(msg);
                 });
             }

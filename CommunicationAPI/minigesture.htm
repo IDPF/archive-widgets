@@ -37,7 +37,7 @@
         var eventButton = document.getElementById("event");
 
         eventButton.addEventListener("click", function (e) {
-            window.TopicPublish("event", "capture phase click:" + eventCounter++ + " - " + window.widgetID);
+            wapi.publish("event", "capture phase click:" + eventCounter++ + " - " + wapi.widgetID);
         }, true);
     </script>
 </body>
