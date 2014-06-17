@@ -38,13 +38,24 @@
     var wapi = {
         /* Hash of topicName {string} to iframe element reference and handler. */
         TopicMap_ : {},
+        eventCounter : 0, // sample purposes only
         /* Initialize function called at the same time as the wapi object is assigned to window */
         initialize : function(){
             window.console.log("Widget API is loaded for " + window.document.URL);
             /* add the event listener for message, and point to the handler */
             window.addEventListener("message", Private.handler);
+            
 			// possibly add a mutation observer here to observe the dom nodes with
 			// iframes. If it's hidden, then send it a pause message automatically
+			
+			/* add in the event listeners for any events we want to pass up through automatically */
+			document.addEventListener("click", Private.passEvent); // leaving out everything but click for testing
+			//document.addEventListener("mousedown", Private.passEvent);
+			//document.addEventListener("mousemove", Private.passEvent);
+			//document.addEventListener("mouseup", Private.passEvent);
+			//document.addEventListener("touchstart", Private.passEvent);
+			//document.addEventListener("touchmove", Private.passEvent);
+			//document.addEventListener("touchend", Private.passEvent);
         },
         /**
          * Constructor for messages.
@@ -169,7 +180,17 @@
             });
             return uuid;
         },
-        handler : function(event){
+        passEvent : function(event) {
+            if(event.bubbles){
+				if(window.parent){
+				    // message included for testing only
+					var msg = "capture phase "+event.type+":" + wapi.eventCounter++ + " - " + wapi.widgetID,
+					    message = new wapi.Message("publish", "event", msg, event.bubbles, event)
+					window.parent.postMessage(message, "*")
+				}
+			}
+        },
+        handler : function(event) {
             /**
              * Subscribe to a topic.
              * @param {string} topicName - name of topic.

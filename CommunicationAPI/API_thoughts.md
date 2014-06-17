@@ -5,6 +5,7 @@ single accessible window object - wapi
 
 methods on that object
 wapi
+	.initalize -- start up the api mechanism, bind up event handlers
 	.Message -- message constructor
 		{
 			type_ : "message",
