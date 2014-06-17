@@ -34,3 +34,8 @@ private
 	.uuid - gen a uuid for the widget to self identify
 	.messageHandlers - handle the incoming messages
 	.passEvent - uses the native event's [bubbles] option to know whether or not to pass along to parent window. This would respect the stop propagation that the native event relies on, to prevent the parent window from receiving a message about an event that the widget has asked to stop propagation on.
+	
+questions
+--------------
+
+* should the widget api include an "always subscribed" methodology for stop events? That way, the parent window can "pause" the widget, even if the widget has never subscribed to the topic from the parent.
