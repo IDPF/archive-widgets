@@ -39,11 +39,24 @@
         /* Hash of topicName {string} to iframe element reference and handler. */
         TopicMap_ : {},
         eventCounter : 0, // sample purposes only
-        /* Initialize function called at the same time as the wapi object is assigned to window */
+        
+        /** 
+         * Initialize function called at the same time as the wapi object is assigned to window
+        */
         initialize : function(){
             window.console.log("Widget API is loaded for " + window.document.URL);
             /* add the event listener for message, and point to the handler */
-            window.addEventListener("message", Private.handler);
+            window.addEventListener("message", function(e){
+                // bind to Private to get the "this" scope right
+                var handler = Private.handler.bind(Private);
+                handler(e);
+            });
+            
+            /**
+             * ID of widget
+             * @type {string} guid -.
+             */
+            wapi.widgetID = Private.generateUUID();
             
 			// possibly add a mutation observer here to observe the dom nodes with
 			// iframes. If it's hidden, then send it a pause message automatically
@@ -57,6 +70,7 @@
 			//document.addEventListener("touchmove", Private.passEvent);
 			//document.addEventListener("touchend", Private.passEvent);
         },
+        
         /**
          * Constructor for messages.
          * @param {string} method -.
@@ -180,6 +194,11 @@
             });
             return uuid;
         },
+        
+        /**
+         * Message an event object up through to the parent window
+         * @param {Event} event -.
+        */
         passEvent : function(event) {
             if(event.bubbles){
 				if(window.parent){
@@ -190,95 +209,12 @@
 				}
 			}
         },
+        
+        /**
+         * Handle the message event from another window
+         * @param {Event} event - original message event.
+        */
         handler : function(event) {
-            /**
-             * Subscribe to a topic.
-             * @param {string} topicName - name of topic.
-             * @param {Event} event -.
-             */
-            function subscribe(topicName, event) {
-                if (!wapi.TopicMap_[topicName])
-                {
-                    wapi.TopicMap_[topicName] = {
-                        subscribers: [],
-                        handler: null
-                    }
-                }
-
-                /* Don"t add duplicate subscriptions. */
-                if (wapi.TopicMap_[topicName].subscribers.indexOf(event.source) >= 0)
-                {
-                    return;
-                }
-                wapi.TopicMap_[topicName].subscribers.push(event.source);
-            }
-
-
-            /**
-             * Unsubscribe from the topic.
-             * @param {string} topicName - name of topic.
-             * @param {Event} event -.
-             */
-            function unsubscribe(topicName, event) {
-                if (!wapi.TopicMap_[topicName])
-                {
-                    return;
-                }
-
-                var index = wapi.TopicMap_[topicName].subscribers.indexOf(event.source);
-                if (index >= 0)
-                {
-                    wapi.TopicMap_[topicName].subscribers.splice(index, 1);
-                }
-            }
-
-
-            /**
-             * Broadcast the message to parent, child windows, and local handlers.
-             * @param {Window} srcWin of message.
-             * @param {Object} message -.
-             */
-            function broadcastTopic(srcWin, message) {
-                /* this code is largely a dup of above, fix */
-
-                var topicName = message.payload.topic;
-
-                if (message.payload.id != wapi.widgetID)
-                {
-                    if (window.parent != window)
-                    {
-                        /* ideally we would know that the message came from the parent and
-                         * not feel the necessity to make this call :-)
-                         */
-                        window.console.log("Widget API message2: send to parent - " +
-                                           topicName + ", " + window.document.URL);
-                        window.parent.postMessage(message, "*");
-                    }
-
-                    /* handle locally, the assumption is that there is one handler per widget/window */
-                    if (wapi.TopicMap_[topicName] && wapi.TopicMap_[topicName].handler)           
-                    {
-                        /* there is a local handler */
-                        window.console.log("Widget API message2: handle locally - " +
-                                           topicName + ", " + window.document.URL);
-                        wapi.TopicMap_[topicName].handler(message.payload.message);
-                    }
-
-                    /* send to children */
-                    var widgets = window.document.querySelectorAll(".widget");
-
-                    if (widgets.length)
-                    {
-                        message.payload.id = wapi.widgetID;
-                        for (var i = 0; i < widgets.length; i++)
-                        {
-                            window.console.log("Widget API message: child - " + topicName);
-                            widgets[i].contentWindow.postMessage(message, "*");
-                        }
-                    }
-                }
-            }
-
             if (event.data.type_ === "message")
             {
                 switch (event.data.method)
@@ -286,17 +222,17 @@
                     case "subscribe":
                         window.console.log("Widget API message: subscribe - " +
                                             event.data.payload.topic + ", " + window.document.URL);
-                        subscribe(event.data.payload.topic, event);
+                        this.subscribe(event.data.payload.topic, event);
                         break;
 
                     case "unsubscribe":
                         window.console.log("Widget API message: unsubscribe - " +
                                             event.data.payload.topic + ", " + window.document.URL);
-                        unsubscribe(event.data.payload.topic, event);
+                        this.unsubscribe(event.data.payload.topic, event);
                         break;
 
                     case "publish":
-                        broadcastTopic(event.source, event.data);
+                        this.broadcastTopic(event.source, event.data);
                         break;
 
                     default:
@@ -304,15 +240,95 @@
                         break;
                 }
             }
+        },
+        
+        /**
+         * Subscribe to a topic.
+         * @param {string} topicName - name of topic.
+         * @param {Event} event -.
+         */
+        subscribe : function(topicName, event) {
+            if (!wapi.TopicMap_[topicName])
+            {
+                wapi.TopicMap_[topicName] = {
+                    subscribers: [],
+                    handler: null
+                }
+            }
+
+            /* Don"t add duplicate subscriptions. */
+            if (wapi.TopicMap_[topicName].subscribers.indexOf(event.source) >= 0)
+            {
+                return;
+            }
+            wapi.TopicMap_[topicName].subscribers.push(event.source);
+        },
+        
+        /**
+         * Unsubscribe from the topic.
+         * @param {string} topicName - name of topic.
+         * @param {Event} event -.
+         */
+        unsubscribe : function(topicName, event) {
+            if (!wapi.TopicMap_[topicName])
+            {
+                return;
+            }
+
+            var index = wapi.TopicMap_[topicName].subscribers.indexOf(event.source);
+            if (index >= 0)
+            {
+                wapi.TopicMap_[topicName].subscribers.splice(index, 1);
+            }
+        },
+        
+        /**
+         * Broadcast the message to parent, child windows, and local handlers.
+         * @param {Window} srcWin of message.
+         * @param {Object} message -.
+         */
+        broadcastTopic : function(srcWin, message) {
+            /* this code is largely a dup of above, fix */
+
+            var topicName = message.payload.topic;
+
+            if (message.payload.id != wapi.widgetID)
+            {
+                if (window.parent != window)
+                {
+                    /* ideally we would know that the message came from the parent and
+                     * not feel the necessity to make this call :-)
+                     */
+                    window.console.log("Widget API message2: send to parent - " +
+                                       topicName + ", " + window.document.URL);
+                    window.parent.postMessage(message, "*");
+                }
+
+                /* handle locally, the assumption is that there is one handler per widget/window */
+                if (wapi.TopicMap_[topicName] && wapi.TopicMap_[topicName].handler)           
+                {
+                    /* there is a local handler */
+                    window.console.log("Widget API message2: handle locally - " +
+                                       topicName + ", " + window.document.URL);
+                    wapi.TopicMap_[topicName].handler(message.payload.message);
+                }
+
+                /* send to children */
+                var widgets = window.document.querySelectorAll(".widget");
+
+                if (widgets.length)
+                {
+                    message.payload.id = wapi.widgetID;
+                    for (var i = 0; i < widgets.length; i++)
+                    {
+                        window.console.log("Widget API message: child - " + topicName);
+                        widgets[i].contentWindow.postMessage(message, "*");
+                    }
+                }
+            }
         }
     }
     
-    /**
-     * ID of widget
-     * @type {string} guid -.
-     */
-    wapi.widgetID = Private.generateUUID()
-
     /* declare the wapi object on the window */
     window.wapi = wapi
     

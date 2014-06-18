@@ -40,3 +40,14 @@ questions
 --------------
 
 * should the widget api include an "always subscribed" methodology for stop events? That way, the parent window can "pause" the widget, even if the widget has never subscribed to the topic from the parent.
+
+
+Broadcast direction
+------------
+
+broadcast is always full chain up the line, so if a message is published, it pushes through to the parent window that contains it. If a message is published by the parent, then it passes through to the subscribing child, which re-publishes to it's own children subscribers
+
+parent publish  --> child --> child
+
+child publish --> parent --> parent
+
