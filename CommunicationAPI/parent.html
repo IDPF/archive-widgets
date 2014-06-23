@@ -83,7 +83,7 @@
 
    <script>
       /* subscribe to the event call */
-      wapi.subscribe("event", function (msg) {
+      wapi.subscribe(window.parent, "event", function (msg) {
               var e = document.getElementById("status");
               e.innerHTML = "Topic: [event] " + msg;
       });

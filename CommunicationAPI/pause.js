@@ -2,6 +2,6 @@
  * Sample code.
  */
 
-wapi.subscribe("pause", function (msg) {
+wapi.subscribe(window.parent, "pause", function (msg) {
     handlePause(msg);
 });

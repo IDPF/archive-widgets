@@ -105,10 +105,11 @@
         },
         /**
          * Subscribe to a topic
+         * @param {object} win is the target window object.
          * @param {string} topicName name of topic.
          * @param {function} func to handle topic messages.
          */
-        subscribe : function (topicName, func) {
+        subscribe : function (win, topicName, func) {
 
             if (!this.subscriptions_[topicName])
             {
@@ -117,18 +118,19 @@
                     handlers: []
                 }
             }
+            /* add the handler into the array */
             this.subscriptions_[topicName].handlers.push(func);
 
-            /* Tell parent I am subscribing to topic. */
-            window.parent.postMessage(new this.Message("subscribe", topicName), "*");
+            /* Tell window I am subscribing to topic. */
+            win.postMessage(new this.Message("subscribe", topicName), "*");
         },
         /**
          * Unsubscribe from a topic
+         * @param {object} win is the target window object.
          * @param {string} topicName
-         * @param {Object} data to publish.
          */
-        unsubscribe : function (topicName) {
-            window.parent.postMessage(new this.Message("unsubscribe", topicName), "*");
+        unsubscribe : function (win, topicName) {
+            win.postMessage(new this.Message("unsubscribe", topicName), "*");
             if (this.subscriptions_[topicName])
             {
                 delete this.subscriptions_[topicName];
@@ -140,36 +142,11 @@
          * @param {Object} data to publish.
          */
         publish : function (topicName, data) {
-
             var message = new this.Message("publish", topicName, data);
-
-            /* send to parent */
-            if (window.parent != window)
-            {
-                window.console.log("Widget API message: send to parent - " +
-                                    topicName + ", " + window.document.URL);
-                window.parent.postMessage(message, "*");
-            }
-
-            /* handle locally */
-            if (this.subscriptions_[topicName] && this.subscriptions_[topicName].handlers)
-            {
-                /* there is a local handler */
-                window.console.log("Widget API message: handle locally - " + topicName + ", " + window.document.URL);
-                for(var key in this.subscriptions_[topicName].handlers){
-                    var handler = this.subscriptions_[topicName].handlers[key];
-                    handler(message.payload.message);
-                }
-            }
-
-            /* send to children */
-            /* TODO: figure out how to call querySelector on epub:type="widget" */
-            var widgets = window.document.querySelectorAll(".widget");
-
-            for (var i = 0; i < widgets.length; i++)
-            {
-                window.console.log("Widget API message: child - " + topicName);
-                widgets[i].contentWindow.postMessage(message, "*");
+            /* loop through subscribers and send them the message */
+            for(var key in this.subscriptions_[topicName].subscribers) {
+                var win = this.subscriptions_[topicName].subscribers[key];
+                win.postMessage(message, "*");
             }
         },
         /**
@@ -291,46 +268,51 @@
          * @param {Object} message -.
          */
         broadcastTopic : function(srcWin, message) {
-            /* this code is largely a dup of above, fix */
-
             var topicName = message.payload.topic;
-
-            if (message.payload.id != wapi.widgetID)
+            
+            if(topicName == "event" && message.payload.id != wapi.widgetID)
             {
+                /* events are broadcast up to the parents no matter what */
                 if (window.parent != window)
                 {
-                    /* ideally we would know that the message came from the parent and
-                     * not feel the necessity to make this call :-)
-                     */
                     window.console.log("Widget API message2: send to parent - " +
                                        topicName + ", " + window.document.URL);
                     window.parent.postMessage(message, "*");
                 }
 
+                handleLocal()                    
+            }
+            else if (message.payload.id != wapi.widgetID)
+            {
+                /* send to all subscribers */
+                if(wapi.subscriptions_[topicName] && wapi.subscriptions_[topicName].subscribers)
+                {
+                    for(var key in wapi.subscriptions_[topicName].subscribers)
+                    {
+                        var win = wapi.subscriptions_[topicName].subscribers[key];
+                        win.postMessage(message, "*");
+                    }
+                }
+                
+                handleLocal()
+
+            }
+            
+            function handleLocal()
+            {
                 /* handle locally */
                 if (wapi.subscriptions_[topicName] && wapi.subscriptions_[topicName].handlers)
                 {
                     /* there is a local handler */
                     window.console.log("Widget API message: handle locally - " + topicName + ", " + window.document.URL);
-                    for(var key in wapi.subscriptions_[topicName].handlers){
+                    for(var key in wapi.subscriptions_[topicName].handlers)
+                    {
                         var handler = wapi.subscriptions_[topicName].handlers[key];
                         handler(message.payload.message);
                     }
                 }
-
-                /* send to children */
-                var widgets = window.document.querySelectorAll(".widget");
-
-                if (widgets.length)
-                {
-                    message.payload.id = wapi.widgetID;
-                    for (var i = 0; i < widgets.length; i++)
-                    {
-                        window.console.log("Widget API message: child - " + topicName);
-                        widgets[i].contentWindow.postMessage(message, "*");
-                    }
-                }
             }
+            
         }
     }
     

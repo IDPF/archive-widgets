@@ -32,7 +32,7 @@
             data.innerHTML = msg;
         }
 
-        wapi.subscribe("data", handleData);
+        wapi.subscribe(window.parent, "data", handleData);
 
         var subscribed = true;
         var button = document.getElementById("unsubscribe");
@@ -41,13 +41,13 @@
             {
                 subscribed = false;
                 button.setAttribute("value", "Subscribe");
-                wapi.unsubscribe("pause");
+                wapi.unsubscribe(window.parent, "pause");
             }
             else
             {
                 subscribed = true;
                 button.setAttribute("value", "Unsubscribe");
-                wapi.subscribe("pause", function (msg) {
+                wapi.subscribe(window.parent, "pause", function (msg) {
                     handlePause(msg);
                 });
             }
