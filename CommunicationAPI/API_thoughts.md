@@ -45,9 +45,10 @@ questions
 Broadcast direction
 ------------
 
-broadcast is always full chain up the line, so if a message is published, it pushes through to the parent window that contains it. If a message is published by the parent, then it passes through to the subscribing child, which re-publishes to it's own children subscribers
+broadcast to all subscribers, regardless of direction
 
-parent publish  --> child --> child
+parent --> child --> grandchild
 
-child publish --> parent --> parent
+grandchild --> child --> other grandchild
+					 --> parent
 

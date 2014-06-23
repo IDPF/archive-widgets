@@ -37,7 +37,7 @@
 !function(){
     var wapi = {
         /* Hash of topicName {string} to iframe element reference and handler. */
-        TopicMap_ : {},
+        subscriptions_ : {},
         eventCounter : 0, // sample purposes only
         
         /** 
@@ -110,14 +110,14 @@
          */
         subscribe : function (topicName, func) {
 
-            if (!this.TopicMap_[topicName])
+            if (!this.subscriptions_[topicName])
             {
-                this.TopicMap_[topicName] = {
+                this.subscriptions_[topicName] = {
                     subscribers: [],
-                    handler: null /* can we have more than one handler? */
+                    handlers: []
                 }
             }
-            this.TopicMap_[topicName].handler = func;
+            this.subscriptions_[topicName].handlers.push(func);
 
             /* Tell parent I am subscribing to topic. */
             window.parent.postMessage(new this.Message("subscribe", topicName), "*");
@@ -129,9 +129,9 @@
          */
         unsubscribe : function (topicName) {
             window.parent.postMessage(new this.Message("unsubscribe", topicName), "*");
-            if (this.TopicMap_[topicName])
+            if (this.subscriptions_[topicName])
             {
-                delete this.TopicMap_[topicName];
+                delete this.subscriptions_[topicName];
             }
         },
         /**
@@ -152,11 +152,14 @@
             }
 
             /* handle locally */
-            if (this.TopicMap_[topicName] && this.TopicMap_[topicName].handler)
+            if (this.subscriptions_[topicName] && this.subscriptions_[topicName].handlers)
             {
                 /* there is a local handler */
                 window.console.log("Widget API message: handle locally - " + topicName + ", " + window.document.URL);
-                this.TopicMap_[topicName].handler(message.payload.message);
+                for(var key in this.subscriptions_[topicName].handlers){
+                    var handler = this.subscriptions_[topicName].handlers[key];
+                    handler(message.payload.message);
+                }
             }
 
             /* send to children */
@@ -248,20 +251,20 @@
          * @param {Event} event -.
          */
         subscribe : function(topicName, event) {
-            if (!wapi.TopicMap_[topicName])
+            if (!wapi.subscriptions_[topicName])
             {
-                wapi.TopicMap_[topicName] = {
+                wapi.subscriptions_[topicName] = {
                     subscribers: [],
-                    handler: null
+                    handlers: null
                 }
             }
 
             /* Don"t add duplicate subscriptions. */
-            if (wapi.TopicMap_[topicName].subscribers.indexOf(event.source) >= 0)
+            if (wapi.subscriptions_[topicName].subscribers.indexOf(event.source) >= 0)
             {
                 return;
             }
-            wapi.TopicMap_[topicName].subscribers.push(event.source);
+            wapi.subscriptions_[topicName].subscribers.push(event.source);
         },
         
         /**
@@ -270,15 +273,15 @@
          * @param {Event} event -.
          */
         unsubscribe : function(topicName, event) {
-            if (!wapi.TopicMap_[topicName])
+            if (!wapi.subscriptions_[topicName])
             {
                 return;
             }
 
-            var index = wapi.TopicMap_[topicName].subscribers.indexOf(event.source);
+            var index = wapi.subscriptions_[topicName].subscribers.indexOf(event.source);
             if (index >= 0)
             {
-                wapi.TopicMap_[topicName].subscribers.splice(index, 1);
+                wapi.subscriptions_[topicName].subscribers.splice(index, 1);
             }
         },
         
@@ -304,13 +307,15 @@
                     window.parent.postMessage(message, "*");
                 }
 
-                /* handle locally, the assumption is that there is one handler per widget/window */
-                if (wapi.TopicMap_[topicName] && wapi.TopicMap_[topicName].handler)           
+                /* handle locally */
+                if (wapi.subscriptions_[topicName] && wapi.subscriptions_[topicName].handlers)
                 {
                     /* there is a local handler */
-                    window.console.log("Widget API message2: handle locally - " +
-                                       topicName + ", " + window.document.URL);
-                    wapi.TopicMap_[topicName].handler(message.payload.message);
+                    window.console.log("Widget API message: handle locally - " + topicName + ", " + window.document.URL);
+                    for(var key in wapi.subscriptions_[topicName].handlers){
+                        var handler = wapi.subscriptions_[topicName].handlers[key];
+                        handler(message.payload.message);
+                    }
                 }
 
                 /* send to children */
