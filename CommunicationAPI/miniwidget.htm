@@ -19,6 +19,45 @@
     <div id="source">src</div>
     <div id="status">No status</div>
     <div id="timer"></div>
+
+    <div id="eventdiv">
+        <label>Pause miniwidget.htm</label>
+        <input class="publish" id="testPause" type="button" name="Test" value="Pause">
+    </div>
+	
+	<script>
+		var button = document.getElementById("testPause"),
+			running = true;
+		
+		wapi.subscribe(window.parent, "pause", function(msg){
+			if (msg == "pause")
+            {
+                    running = false;
+                    button.setAttribute("value", "Resume");
+            }
+            else
+            {
+                    button.setAttribute("value", "Pause");
+                    running = true;
+            }
+		})	
+		
+		button.addEventListener("click", function(e){
+			e.preventDefault();
+			if (running === true)
+            {
+					wapi.sendMessage(window.parent, "pause", "pause");
+                    running = false;
+                    button.setAttribute("value", "Resume");
+            }
+            else
+            {
+					wapi.sendMessage(window.parent, "pause", "resume");
+                    button.setAttribute("value", "Pause");
+                    running = true;
+            }
+		})
+	</script>
     <script src="timer.js"></script>
 </body>
 </html>

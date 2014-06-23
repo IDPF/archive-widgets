@@ -273,7 +273,7 @@
             if(topicName == "event" && message.payload.id != wapi.widgetID)
             {
                 /* events are broadcast up to the parents no matter what */
-                if (window.parent != window)
+                if (window.parent != window && message.bubbles)
                 {
                     window.console.log("Widget API message2: send to parent - " +
                                        topicName + ", " + window.document.URL);
@@ -285,7 +285,7 @@
             else if (message.payload.id != wapi.widgetID)
             {
                 /* send to all subscribers */
-                if(wapi.subscriptions_[topicName] && wapi.subscriptions_[topicName].subscribers)
+                if(wapi.subscriptions_[topicName] && wapi.subscriptions_[topicName].subscribers && message.bubbles)
                 {
                     for(var key in wapi.subscriptions_[topicName].subscribers)
                     {
