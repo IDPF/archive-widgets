@@ -26,8 +26,8 @@ function handlePause(msg) {
         {
             timerid = window.setInterval(function () {
                 timer.innerHTML = counter;
-                counter += 50;
-            }, 50);
+                counter += 500;
+            }, 500);
         }
     }
 }

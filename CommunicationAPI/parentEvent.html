@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+    <!-- widget communication code -->
+    <script src="widget_api.js"></script>
+
+
+    <link href="status.css" type="text/css" rel="stylesheet">
+    <style>
+        #childIframeA {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            width: 670px;
+            height: 400px;
+        }
+
+        #childIframeB {
+            position: absolute;
+            top: 50px;
+            left: 700px;
+            width: 670px;
+            height: 400px;
+        }
+
+        #controls {
+            position: absolute;
+            top: 490px;
+            left: 20px;
+            width: 670px;
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+        }
+
+        .method, .events, .pubsub {
+            border: 2px solid black;
+            margin: 5px;
+        }
+
+        #counters {
+            position: absolute;
+            top: 20px;
+            left: 720px;
+            width: 250px;
+            height: 700px;
+            font-size: 14px;
+            font-family: Consolas, sans-serif;
+            border: 1px solid red;
+        }
+
+        .counter {
+            margin-left: 20px;
+        }
+
+        .eventlabel {
+            font-size: 18px;
+            font-family: Consolas, sans-serif;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+
+<iframe epub:type="widget"class="widget" id="childIframeA" src="childEventA.html"></iframe>
+
+<div id="controls" style="padding:10px;">
+    <div class="method">
+        <label>Topic: pause (all)</label>
+        <input id="pause" type="button" name="Pause" value="Pause">
+    </div>
+    <div class="events">
+        <label>Topic: events subscribe (all)</label>
+        <input id="events" type="button" name="Events" value="Unsubscribe">
+    </div>
+    <div class="pubsub">
+        <label>Topic: PubSub/Dispatch</label>
+
+        <div>
+            <input id="pubsub" type="radio" name="pubsub"
+                   value="PubSub" checked=true>
+            PubSub
+        </div>
+        <div>
+            <input id="dispatch" type="radio" name="pubsub" value="Dispatch">
+            DispatchEvent
+        </div>
+    </div>
+</div>
+
+
+<div id="counters">
+    <div class='eventlabel' id='eventlabel'> Event Topics</div>
+    <div class="counter" style="margin-top: 10px;"><span>click: </span><span id="click"> 0</span></div>
+    <div class="counter"><span>dblclick: </span><span id="dblclick"> 0</span></div>
+    <div class="counter"><span>mousedown: </span><span id="mousedown"> 0</span></div>
+    <div class="counter"><span>mouseup: </span><span id="mouseup"> 0</span></div>
+    <div class="counter"><span>mouseover: </span><span id="mouseover"> 0</span></div>
+    <div class="counter"><span>mousemove: </span><span id="mousemove"> 0</span></div>
+    <div class="counter"><span>mouseout: </span><span id="mouseout"> 0</span></div>
+    <div class="counter"><span>keydown: </span><span id="keydown"> 0</span></div>
+    <div class="counter"><span>keypress: </span><span id="keypress"> 0</span></div>
+    <div class="counter"><span>keyup: </span><span id="keyup"> 0</span></div>
+    <div class="counter"><span>resize: </span><span id="resize"> 0</span></div>
+    <div class="counter"><span>scroll: </span><span id="scroll"> 0</span></div>
+    <div class="counter"><span>focus: </span><span id="focus"> 0</span></div>
+    <div class="counter"><span>blur: </span><span id="blur"> 0</span></div>
+    <div class="counter"><span>focusin: </span><span id="focusin"> 0</span></div>
+    <div class="counter"><span>focusout: </span><span id="focusout"> 0</span></div>
+    <div class="counter"><span>DOMActivate: </span><span id="DOMActivate"> 0</span></div>
+    <div class="counter"><span>touchstart: </span><span id="touchstart"> 0</span></div>
+    <div class="counter"><span>touchend: </span><span id="touchend"> 0</span></div>
+    <div class="counter"><span>touchmove: </span><span id="touchmove"> 0</span></div>
+    <div class="counter"><span>touchenter: </span><span id="touchenter"> 0</span></div>
+    <div class="counter"><span>touchleave: </span><span id="touchleave"> 0</span></div>
+    <div class="counter"><span>touchcancel: </span><span id="touchcancel"> 0</span></div>
+    <div class="counter"><span>pointerdown: </span><span id="pointerdown"> 0</span></div>
+    <div class="counter"><span>pointerup: </span><span id="pointerup"> 0</span></div>
+    <div class="counter"><span>pointercancel: </span><span id="pointercancel"> 0</span></div>
+    <div class="counter"><span>pointermove: </span><span id="pointermove"> 0</span></div>
+    <div class="counter"><span>pointerover: </span><span id="pointerover"> 0</span></div>
+    <div class="counter"><span>pointerout: </span><span id="pointerout"> 0</span></div>
+    <div class="counter"><span>pointerenter: </span><span id="pointerenter"> 0</span></div>
+    <div class="counter"><span>pointerleave: </span><span id="pointerleave"> 0</span></div>
+    <div class="counter"><span>gotpointercapture: </span><span id="gotpointercapture"> 0</span></div>
+    <div class="counter"><span>lostpointercapture:</span><span id="lostpointercapture">0 </span></div>
+</div>
+
+<script>
+    /* subscribe to the event call */
+    wapi.subscribe("event", function (msg) {
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [event] " + msg;
+    });
+
+    /* code for controls */
+    var pause = document.getElementById("pause");
+    var running = true;
+
+    pause.addEventListener("click", function (e) {
+        if (running === true)
+        {
+            wapi.publish("pause", "pause");
+            running = false;
+            pause.setAttribute("value", "Resume");
+        }
+        else
+        {
+            wapi.publish("pause", "resume");
+            pause.setAttribute("value", "Pause");
+            running = true;
+        }
+    }, false);
+
+    var events = document.getElementById("events");
+    var eventsSubscribed = true;
+
+    events.addEventListener("click", function (e) {
+        if (eventsSubscribed === true)
+        {
+            unsubscribe(eventCounters);
+            eventsSubscribed = false;
+            events.setAttribute("value", "Subscribe");
+        }
+        else
+        {
+            subscribe(eventCounters);
+            eventsSubscribed = true;
+            events.setAttribute("value", "Unsubscribe");
+        }
+    }, false);
+
+
+    window.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+    }, false);
+
+</script>
+<script src="timer.js"></script>
+<script src="pause.js"></script>
+<script src="parentEvents.js"></script>
+
+<script>
+
+    var pubsub = document.getElementById("pubsub");
+    var dispatch = document.getElementById("dispatch");
+
+    var usePubsub = true;
+
+    if (usePubsub === true)
+    {
+        subscribe(eventCounters);
+    }
+    else
+    {
+        listen(eventCounters);
+    }
+
+    wapi.publish('pubsub', { use: usePubsub })
+
+    pubsub.addEventListener("click", function (e) {
+        if (usePubsub === false)
+        {
+            usePubsub = true;
+            removeListen(eventCounters);
+            subscribe(eventCounters);
+            wapi.publish('pubsub', { use: usePubsub })
+        }
+    }, false);
+
+
+    dispatch.addEventListener("click", function (e) {
+        if (usePubsub === true)
+        {
+            usePubsub = false;
+            unsubscribe(eventCounters);
+            listen(eventCounters);
+            wapi.publish('pubsub', { use: usePubsub })
+        }
+    }, false);
+
+    wapi.subscribe('profile', function (msg) {
+        var count = getEventCount();
+        stopCounters();
+        window.console.profile();
+        setTimeout(function () {
+            window.console.profileEnd();
+            count = getEventCount() - count;
+            startCounters();
+            alert('Profiling done: ' + count);
+        }, 15000);
+    });
+
+</script>
+</body>
+</html>

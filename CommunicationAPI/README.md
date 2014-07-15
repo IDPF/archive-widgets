@@ -9,10 +9,12 @@ communication between RS, EPUB and Widgets where these entities exist
 in domains preventing XSS.
 
 	TODO
-		1. Get basic pub/sub code working.
+	1. Get basic pub/sub code working.
         2. Get naming conventions correct.
         3. Document for standards doc - message schema, topic names, 
            use of sendMessage, expected behaviors
+        4. Understand performance characteristics of postMessage vs. dispatchEvent for
+           propagating events.
 
 ### Samples
     to run:

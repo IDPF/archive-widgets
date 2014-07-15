@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Widget</title>
+    <script src="widget_api.js"></script>
+    <link type="text/css" rel="stylesheet" href="status.css">
+    <style>
+        #timer {
+            text-align: center;
+            font-size: 36px;
+            margin: 20px;
+            border: 1px solid blue;
+            margin-top: 30px;
+        }
+
+        #eventdiv {
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+
+        }
+
+        #area {
+            border: 2px solid red;
+            background: yellow;
+            width: 400px;
+            height: 100px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+
+<div id='area'>
+    <div>Click profile to start 15 seconds of profiling for event
+        propagation.
+        <input type="button" id="button" name="Button" value="Profile">
+    </div>
+    <input type="text" id="text" name="Text" value="text">
+</div>
+
+<div id="timer"></div>
+
+<script src="timer.js"></script>
+<script src="pause.js"></script>
+<script>
+    var eventCounter = 0;
+
+    /******* WINDOW ***********/
+    window.addEventListener("click", function (e) {
+        var msg = 'window click capture: ' + "   " + e.target.localName;
+        if (e.target.type)
+        {
+            msg += "#" + e.target.type;
+        }
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [click] " + msg;
+    }, true);
+
+    window.addEventListener("click", function (e) {
+        window.console.log('window click bubble: ' + e.defaultPrevented + " " + eventCounter++);
+    }, false);
+
+
+    window.addEventListener("keyup", function (e) {
+        window.console.log('window keyup capture: ' + "   " + e.target.localName);
+    }, true);
+
+    window.addEventListener("keyup", function (e) {
+        window.console.log('window keyup bubble: ' + e.defaultPrevented + " " + eventCounter++);
+    }, false);
+
+
+    /******* DIV.#AREA ***********/
+    var area = document.getElementById('area');
+    area.addEventListener("click", function (e) {
+        window.console.log('area capture');
+    }, true);
+
+    area.addEventListener("click", function (e) {
+        window.console.log('area bubble');
+    }, false);
+
+
+    /******* BUTTON ***********/
+    var button = document.getElementById('button');
+    button.addEventListener("click", function (e) {
+        window.console.log('button capture');
+        e.preventDefault();
+        wapi.publish('profile', { foo: 'bar' });
+    }, true);
+
+    button.addEventListener("click", function (e) {
+        window.console.log('button bubble');
+//		e.preventDefault();
+    }, false);
+
+
+    /******* TEXT ***********/
+    var text = document.getElementById('text');
+    text.addEventListener("keyup", function (e) {
+        window.console.log('text capture');
+        e.preventDefault();
+    }, true);
+
+    text.addEventListener("keyup", function (e) {
+        window.console.log('text bubble');
+        e.preventDefault();
+    }, false);
+
+</script>
+<script src="childEvents.js"></script>
+</body>
+</html>

@@ -3,7 +3,6 @@
 <head>
     <title>Mini Widget</title>
     <script src="widget_api.js"></script>
-    <script src="pause.js"></script>
     <link type="text/css" rel="stylesheet" href="status.css">
     <style>
         #timer {
@@ -22,23 +21,31 @@
     </style>
 </head>
 <body>
-    <div id="source">src</div>
-    <div id="status">No status</div>
-    <div id="timer"></div>
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="timer"></div>
 
-    <div id="eventdiv">
-        <label>Topic: event</label>
-        <input class="publish" id="event" type="button" name="Event" value="Click Event">
-    </div>
+<div id="eventdiv">
+    <label>Topic: event</label>
+    <input class="publish" id="event" type="button" name="Event" value="Click Event">
+</div>
+<script src="timer.js"></script>
+<script src="pause.js"></script>
+<script>
+    var eventCounter = 0;
+    var eventButton = document.getElementById("event");
 
-    <script src="timer.js"></script>
-    <script>
-        var eventCounter = 0;
-        var eventButton = document.getElementById("event");
+    eventButton.addEventListener("click", function (e) {
+        var doc = document.URL.slice(document.URL.lastIndexOf('/') + 1);
+        var id = wapi.widgetID.slice(wapi.widgetID.lastIndexOf('-') + 1);
+        wapi.publish("event", "click:" + eventCounter++ + " - " + doc + " - " + id);
+    }, true);
 
-        eventButton.addEventListener("click", function (e) {
-            window.TopicPublish("event", "capture phase click:" + eventCounter++ + " - " + window.widgetID);
-        }, true);
-    </script>
+
+    wapi.subscribe('news', function (msg) {
+        var news = document.getElementById("status");
+        news.innerHTML = "Topic: [news] " + msg;
+    });
+</script>
 </body>
 </html>

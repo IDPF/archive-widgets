@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parent</title>
+    <title>Parent2</title>
     <!-- widget communication code -->
     <script src="widget_api.js"></script>
 
     <!-- page implementation code -->
-    <script src="pause.js"></script>
 
     <link href="status.css" type="text/css" rel="stylesheet">
     <style>
@@ -35,56 +34,64 @@
     </style>
 </head>
 <body>
-    <div id="source">src</div>
-    <div id="status">No status</div>
+<div id="source">src</div>
+<div id="status">No status</div>
 
 
-    <iframe epub:type="widget" class="widget" id="compositionIframe2" src="composition2.htm"></iframe>
+<iframe epub:type="widget" class="widget" id="compositionIframe2" src="composition3.htm"></iframe>
 
-    <div id="controls" style="padding:10px;">
-        <div class="method">
-            <label>Topic: pause (all)</label>
-            <input id="pause" type="button" name="Pause" value="Pause">
-        </div>
-        <div class="method">
-            <label>Push Data Topic: miniwidget.htm &amp; compostion.htm</label>
-            <input id="push" type="button" name="Push" value="Push">
-        </div>
+<div id="controls" style="padding:10px;">
+    <div class="method">
+        <label>Topic: pause (all)</label>
+        <input id="pause" type="button" name="Pause" value="Pause">
     </div>
+    <div class="method">
+        <label>Push Data Topic: miniwidget.htm &amp; compostion.htm</label>
+        <input id="push" type="button" name="Push" value="Push">
+    </div>
+</div>
 
-    <script>
-        /* subscribe to the event call */
-        window.TopicSubscribe("event", function (msg) {
-            var e = document.getElementById("status");
-            e.innerHTML = msg;
-        });
+<script>
+    /* subscribe to the event call */
+    wapi.subscribe("event", function (msg) {
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [event] " + msg;
+    });
 
-        /* code for controls */
-        var pause = document.getElementById("pause");
-        var running = true;
+    wapi.subscribe('news', function (msg) {
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [news] " + msg;
+    });
 
-        pause.addEventListener("click", function (e) {
-            if (running === true)
-            {
-                window.TopicPublish("pause", "pause");
-                running = false;
-                pause.setAttribute("value", "Resume");
-            }
-            else
-            {
-                window.TopicPublish("pause", "resume");
-                pause.setAttribute("value", "Pause");
-                running = true;
-            }
-        }, false);
+    /* code for controls */
+    var pause = document.getElementById("pause");
+    var running = true;
 
-        var push = document.getElementById("push");
+    pause.addEventListener("click", function (e) {
+        if (running === true)
+        {
+            wapi.publish("pause", "pause");
+            running = false;
+            pause.setAttribute("value", "Resume");
+        }
+        else
+        {
+            wapi.publish("pause", "resume");
+            pause.setAttribute("value", "Pause");
+            running = true;
+        }
+    }, false);
 
-        push.addEventListener("click", function (e) {
-                window.TopicPublish("data", "<b style='color:red;'>" + new Date() + "</b>");            
-        }, false);
+    var push = document.getElementById("push");
 
-    </script>
-    <script src="timer.js"></script>
+    push.addEventListener("click", function (e) {
+        wapi.publish("data", "<b style='color:red;'>" + new Date() + "</b>");
+    }, false);
+
+
+</script>
+<script src="timer.js"></script>
+<script src="pause.js"></script>
+
 </body>
 </html>

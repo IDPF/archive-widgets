@@ -1,6 +1,7 @@
 #status {
     font-size: 16px;
     font-family: Consolas, sans-serif;
+    margin: 10px;
 }
 
 #source {
@@ -9,7 +10,7 @@
 }
 
 label {
- font-size: 16px;
+    font-size: 16px;
     font-family: Consolas, sans-serif;
     font-weight: bold;
     margin-right: 8px;
@@ -30,7 +31,6 @@ input[value="Resume"] {
 input[value="Pause"] {
     background: #ff0000;
 }
-
 
 input[value="Subscribe"] {
     background: #63be71;

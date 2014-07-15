@@ -4,7 +4,6 @@
     <title>Mini Widget</title>
 
     <script src="widget_api.js"></script>
-    <script src="pause.js"></script>
     <link type="text/css" rel="stylesheet" href="status.css">
     <style>
         #timer {
@@ -16,43 +15,48 @@
     </style>
 </head>
 <body>
-    <div id="source">src</div>
-    <div id="status">No status</div>
-    <div id="timer"></div>
-    <div id="date"></div>
-    <div>
-        <label>Message:</label>
-        <input id="unsubscribe" type="button" name="unsubscribe" value="Unsubscribe">
-    </div>
-    <script src="timer.js"></script>
-    <script>
-        var data = document.getElementById("date");
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="timer"></div>
+<div id="date"></div>
+<div>
+    <label>Message:</label>
+    <input id="unsubscribe" type="button" name="unsubscribe" value="Unsubscribe">
+</div>
 
-        function handleData(msg) {
-            data.innerHTML = msg;
+<script src="timer.js"></script>
+<script src="pause.js"></script>
+<script>
+    var data = document.getElementById("date");
+
+    function handleData(msg) {
+        data.innerHTML = msg;
+    }
+
+    wapi.subscribe("data", handleData);
+
+    wapi.subscribe("event", function (msg) {
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [event] " + msg;
+    });
+
+    var subscribed = true;
+    var button = document.getElementById("unsubscribe");
+    button.addEventListener("click", function (e) {
+        if (subscribed === true)
+        {
+            subscribed = false;
+            button.setAttribute("value", "Subscribe");
+            wapi.unsubscribe("pause", handlePause);
         }
+        else
+        {
+            subscribed = true;
+            button.setAttribute("value", "Unsubscribe");
+            wapi.subscribe("pause", handlePause);
+        }
+    });
 
-        window.TopicSubscribe("data", handleData);
-
-        var subscribed = true;
-        var button = document.getElementById("unsubscribe");
-        button.addEventListener("click", function (e) {
-            if (subscribed === true)
-            {
-                subscribed = false;
-                button.setAttribute("value", "Subscribe");
-                window.TopicUnsubscribe("pause");
-            }
-            else
-            {
-                subscribed = true;
-                button.setAttribute("value", "Unsubscribe");
-                window.TopicSubscribe("pause", function (msg) {
-                    handlePause(msg);
-                });
-            }
-        });
-
-    </script>
+</script>
 </body>
 </html>
