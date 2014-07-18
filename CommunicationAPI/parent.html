@@ -3,7 +3,7 @@
 <head>
     <title>Parent</title>
     <!-- widget communication code -->
-    <script src="widget_api.js"></script>
+    <script src="wapi/widget_api.js"></script>
 
     <!-- page implementation code -->
     <!--script src="pause.js"></script-->
@@ -83,8 +83,8 @@
 
 <script>
     /* subscribe to the event call */
-    wapi.subscribe('ready', function (msg) {
-	    window.console.log('ready: ' + msg);
+    wapi.subscribe("ready", function (msg) {
+        window.console.log("ready: " + msg);
     });
 
     wapi.subscribe("event", function (msg) {
@@ -137,6 +137,6 @@
     }, false);
 
 </script>
-<script src="timer.js"></script>
+<script src="support/timer.js"></script>
 </body>
 </html>

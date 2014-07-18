@@ -8,8 +8,8 @@ This folder contains prototype code for the code that will allow
 communication between RS, EPUB and Widgets where these entities exist 
 in domains preventing XSS.
 
-	TODO
-	1. Get basic pub/sub code working.
+        TODO
+        1. Get basic pub/sub code working.
         2. Get naming conventions correct.
         3. Document for standards doc - message schema, topic names, 
            use of sendMessage, expected behaviors

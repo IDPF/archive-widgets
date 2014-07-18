@@ -89,7 +89,15 @@
      * @param {} s subscriber.
      */
     wapi.TopicHandler_.prototype.addSubscriber = function (s) {
-        this.subscribers_.push(s);
+        /**
+         * Need to protect against duplicate subscribers,
+         * which happens when a child and a grandchild subscribe
+         * to the same topic
+         */
+        if (this.subscribers_.indexOf(s) < 0)
+        {
+            this.subscribers_.push(s);
+        }
     };
 
 
@@ -122,7 +130,7 @@
      * @return {string} a uuid.
      */
     wapi.generateUUID = function () {
-			var d = new Date().getTime();
+        var d = new Date().getTime();
         var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = (d + Math.random() * 16) % 16 | 0;
             d = Math.floor(d / 16);
@@ -132,20 +140,20 @@
     };
 
 
-		/**
+    /**
      * ID of widget
      * @type {string} guid -.
      */
     wapi.widgetID = wapi.generateUUID();
 
 
-		/**
+    /**
      * start time of widget code.
-  	 * @type {Date} starttime
-		 * for debugging startup
+     * @type {Date} starttime
+     * for debugging startup
      */
-		wapi.startTime = new Date().getTime();
-		
+    wapi.startTime = new Date().getTime();
+
     /**
      * Constructor for messages.
      * @param {string} method -.
@@ -156,7 +164,7 @@
      */
     wapi.TopicMessage_ = function (method, topicName, capture, opt_data) {
         this.type_ = "message";
-				this.widgetID = wapi.widgetID;
+        this.widgetID = wapi.widgetID;
         this.messageSource = wapi.widgetID;
         this.id = wapi.generateUUID();
         this.method = method;
@@ -212,40 +220,13 @@
 
 
     /**
-     * Publish a message topic.
+     * Broadcast a message to all windows.
      * @param {string} topicName
-     * @param {TopicMessage_} message to publish.
+     * @param {*} data to publish.
      */
-		wapi.broadcast = function (topicName, message) {
-				var topic = wapi.TopicMap_[topicName];
-
-				if (wapi.verbose)
-				{
-					window.console.log("Widget API message: send to parent - " +
-														 topicName + ", " + window.document.URL);
-				}
-				
-        if (window.parent === window)
-				{
-					/* we have reached the parent,
-					 * this will need to be tweaked to account for RS
-					 */
-					message.capture = false;
-        }
-
-        if (message.capture === true)
-				{
-					/* still in capture phase, send to parent */
-					window.parent.postMessage(message, "*");
-        }
-        else if (topic)
-				{
-					/* walk back down the tree */
-					topic.callHandlers(message);
-					topic.callSubscribers(message);
-        }
+    wapi.broadcast = function (data) {
+        wapi.publish_(topicName, new wapi.TopicMessage_("publish", "broadcast", true, data));
     };
-
 
     /**
      * Publish a message topic.
@@ -253,7 +234,43 @@
      * @param {*} data to publish.
      */
     wapi.publish = function (topicName, data) {
-        wapi.broadcast(topicName, new wapi.TopicMessage_("publish", topicName, true, data));
+        wapi.publish_(topicName, new wapi.TopicMessage_("publish", topicName, true, data));
+    };
+
+
+    /**
+     * Publish a message topic.
+     * @param {string} topicName
+     * @param {TopicMessage_} message to publish.
+     */
+    wapi.publish_ = function (topicName, message) {
+        var topic = wapi.TopicMap_[topicName];
+
+        if (wapi.verbose)
+        {
+            window.console.log("Widget API message: send to parent - " +
+                                   topicName + ", " + window.document.URL);
+        }
+
+        if (window.parent === window)
+        {
+            /* we have reached the parent,
+             * this will need to be tweaked to account for RS
+             */
+            message.capture = false;
+        }
+
+        if (message.capture === true)
+        {
+            /* still in capture phase, send to parent */
+            window.parent.postMessage(message, "*");
+        }
+        else if (topic)
+        {
+            /* walk back down the tree */
+            topic.callHandlers(message);
+            topic.callSubscribers(message);
+        }
     };
 
 
@@ -309,15 +326,15 @@
 
 
         /**
-         * Broadcast the message to parent, child windows, and local handlers.
+         * Publish the message to parent, child windows, and local handlers.
          * @param {Window} srcWin of message.
          * @param {Object} message -.
          */
-        function broadcast(srcWin, message) {
+        function publish(srcWin, message) {
 
             var topicName = message.payload.topic;
 
-            wapi.broadcast(topicName, message);
+            wapi.publish_(topicName, message);
         }
 
 
@@ -326,7 +343,6 @@
             switch (event.data.method)
             {
                 case "subscribe":
-                    window.console.log("## " + document.URL + " subscribe: " + event.data.widgetID + ", " + event.data.payload.topic);
                     subscribe(event.data.payload.topic, event);
                     break;
 
@@ -335,8 +351,9 @@
                     break;
 
                 case "publish":
-                    broadcast(event.source, event.data);
+                    publish(event.source, event.data);
                     break;
+
 
                 default:
                     window.console.error("unknown method");
@@ -348,8 +365,42 @@
 
     window.wapi = wapi;
 
-		window.console.log("Widget API is loaded for " + wapi.widgetID + ", " + window.document.URL);
+    wapi.subscribe("broadcast", function (msg) {
+        window.console.log(window.document.URL + " - broadcast: " + msg);
 
+        if (window.eventPublisher)
+        {
+            if (msg instanceof Array)
+            {
+                if (msg[0].indexOf("-") == 0)
+                {
+                    window.eventPublisher.unpublishEvents(msg);
+                }
+                else
+                {
+                    window.eventPublisher.publishEvents(msg);
+                }
+            }
+            else
+            {
+                if (msg.indexOf("-") == 0)
+                {
+                    window.eventPublisher.unpublishEvents([msg.slice(1)]);
+                }
+                else
+                {
+                    window.eventPublisher.publishEvents([msg]);
+                }
+            }
+        }
+    });
 
-		wapi.publish('ready', wapi.widgetID + ", " + wapi.startTime);
+    wapi.subscribe("ready", function (msg) {
+        window.console.log(window.document.URL + ": " + wapi.widgetID + ":" + msg);
+    });
+
+    wapi.publish("ready", window.document.URL + " - " + wapi.widgetID + ", " + wapi.startTime);
+
+    window.console.log("Widget API is loaded for " + wapi.widgetID + ", " + window.document.URL);
+
 })();
