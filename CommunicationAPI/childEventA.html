@@ -32,6 +32,26 @@
             margin-top: 30px;
             margin-bottom: 30px;
         }
+
+        #slider {
+            position: absolute;
+            left: 30px;
+            top: 400px;
+            border: 2px solid red;
+            background: silver;
+            width: 400px;
+            height: 55px;
+        }
+
+        #thumb {
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            border: 2px solid red;
+            background: green;
+            width: 40px;
+            height: 40px;
+        }
     </style>
 
 </head>
@@ -52,14 +72,68 @@
 
 <div id="timer"></div>
 
+<div id="slider">
+    <div id="thumb"></div>
+</div>
+
 <script src="support/timer.js"></script>
 <script src="support/pause.js"></script>
 <script src="support/focus.js"></script>
 <script>
     var eventCounter = 0;
 
+    /******** THUMB **************/
+    var thumb = document.getElementById('thumb');
+    var thumbDown = false;
+    var deltaX = 0;
+
+    thumb.addEventListener("mousedown", function (e) {
+        window.console.log("Thumb: " + e.type);
+        deltaX = e.clientX - thumb.offsetLeft;
+        thumbDown = true;
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("mouseenter", function (e) {
+        window.console.log("Thumb: " + e.type);
+    }, false);
+
+    thumb.addEventListener("mouseleave", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = true;
+    }, false);
+
+
+    thumb.addEventListener("mousemove", function (e) {
+        window.console.log("Thumb: " + e.type);
+        if (thumbDown)
+        {
+            thumb.style.left = (e.clientX - deltaX) + "px";
+            e.preventDefault();
+        }
+    }, false);
+
+    thumb.addEventListener("mouseout", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("mouseover", function (e) {
+        window.console.log("Thumb: " + e.type);
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("mouseup", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
+
     /******* DIV.#AREA ***********/
     var area = document.getElementById("area");
+
     area.addEventListener("click", function (e) {
         e.preventDefault();
     }, false);
@@ -73,7 +147,7 @@
     area.addEventListener("touchmove", function (e) {
         e.preventDefault();
     }, false);
-	
+
 
     /******* BUTTON ***********/
     var button = document.getElementById("button");

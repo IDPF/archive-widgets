@@ -385,7 +385,7 @@
             {
                 if (msg.indexOf("-") == 0)
                 {
-                    window.eventPublisher.unpublishEvents([msg.slice(1)]);
+                    window.eventPublisher.unpublishEvents([msg]);
                 }
                 else
                 {

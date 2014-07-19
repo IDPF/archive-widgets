@@ -262,6 +262,11 @@
                 }
                 eventCounters_["touchstart"].count += 1;
                 eventCounters_["touchstart"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchstart", msg));
+                }
+
             }
         },
         "touchend": {
@@ -274,6 +279,11 @@
                 }
                 eventCounters_["touchend"].count += 1;
                 eventCounters_["touchend"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchend", msg));
+                }
+
             }
         },
         "touchmove": {
@@ -286,6 +296,11 @@
                 }
                 eventCounters_["touchmove"].count += 1;
                 eventCounters_["touchmove"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchmove", msg));
+                }
+
             }
         },
         "touchenter": {
@@ -298,6 +313,10 @@
                 }
                 eventCounters_["touchenter"].count += 1;
                 eventCounters_["touchenter"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchenter", msg));
+                }
             }
         },
         "touchleave": {
@@ -310,6 +329,11 @@
                 }
                 eventCounters_["touchleave"].count += 1;
                 eventCounters_["touchleave"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchleave", msg));
+                }
+
             }
         },
         "touchcancel": {
@@ -322,6 +346,10 @@
                 }
                 eventCounters_["touchcancel"].count += 1;
                 eventCounters_["touchcancel"].updated = false;
+                if (!msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchcancel", msg));
+                }
             }
         },
         "pointerdown": {
