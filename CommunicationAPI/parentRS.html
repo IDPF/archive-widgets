@@ -37,7 +37,7 @@
             left: 700px;
             width: 250px;
             height: 80px;
-            font-size: 14px;
+            font-size: 12px;
             font-family: Consolas, sans-serif;
             border: 1px solid red;
         }
@@ -86,7 +86,15 @@
 <div id="status">No status</div>
 <div id="focus_status"></div>
 
-<div id="mousetracker">mousestracker</div>
+<div id="mousetracker">
+    <div class="dispatch" style="padding:10px;">
+        <label>
+            Dispatch move events received from widget:
+        </label>
+        <input id="dispatchid" type="checkbox" name="dispatcher" checked>
+    </div>
+    <div id="mousetrackerdata" style="padding-left:10px"></div>
+</div>
 
 <!--iframe id="epubdoc" src="http://publisher.cr:8080/epubdoc.html"></iframe-->
 <iframe id="epubdoc" src="epubdoc.html"></iframe>
@@ -389,6 +397,13 @@
         var dataElement = document.getElementById("data");
         wapi.publish(topicElement.value, dataElement.value);
     });
+</script>
+<script>
+    var dispatchEvents = document.getElementById("dispatchid");
+    dispatchEvents.addEventListener("click", function (e) {
+        eventMonitor.toggleDispatching();
+    });
+
 </script>
 <script src="support/profiler.js"></script>
 <script src="support/timer.js"></script>

@@ -2,6 +2,8 @@
 
     var eventMonitor_ = {};
 
+    var dispatch = true;
+
     var eventCounters_ = {
         "click": {
             count: 0,
@@ -13,7 +15,7 @@
                 }
                 eventCounters_["click"].count += 1;
                 eventCounters_["click"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("click", msg));
                 }
@@ -29,7 +31,7 @@
                 }
                 eventCounters_["dblclick"].count += 1;
                 eventCounters_["dblclick"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("dblclick", msg));
                 }
@@ -45,7 +47,7 @@
                 }
                 eventCounters_["mousedown"].count += 1;
                 eventCounters_["mousedown"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("mousedown", msg));
                 }
@@ -61,7 +63,7 @@
                 }
                 eventCounters_["mouseup"].count += 1;
                 eventCounters_["mouseup"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("mouseup", msg));
                 }
@@ -77,7 +79,7 @@
                 }
                 eventCounters_["mouseover"].count += 1;
                 eventCounters_["mouseover"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("mouseover", msg));
                 }
@@ -93,7 +95,7 @@
                 }
                 eventCounters_["mousemove"].count += 1;
                 eventCounters_["mousemove"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("mousemove", msg));
                 }
@@ -109,7 +111,7 @@
                 }
                 eventCounters_["mouseout"].count += 1;
                 eventCounters_["mouseout"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new MouseEvent("mousedown", msg));
                 }
@@ -126,7 +128,7 @@
                 eventCounters_["keydown"].count += 1;
                 eventCounters_["keydown"].updated = false;
                 var keyboardEvent = new KeyboardEvent("keydown", msg);
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(keyboardEvent);
                 }
@@ -143,7 +145,7 @@
                 eventCounters_["keypress"].count += 1;
                 eventCounters_["keypress"].updated = false;
                 var keyboardEvent = new KeyboardEvent("keypress", msg);
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(keyboardEvent);
                 }
@@ -160,7 +162,7 @@
                 eventCounters_["keyup"].count += 1;
                 eventCounters_["keyup"].updated = false;
                 var keyboardEvent = new KeyboardEvent("keyup", msg);
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(keyboardEvent);
                 }
@@ -262,7 +264,7 @@
                 }
                 eventCounters_["touchstart"].count += 1;
                 eventCounters_["touchstart"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchstart", msg));
                 }
@@ -279,7 +281,7 @@
                 }
                 eventCounters_["touchend"].count += 1;
                 eventCounters_["touchend"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchend", msg));
                 }
@@ -296,7 +298,7 @@
                 }
                 eventCounters_["touchmove"].count += 1;
                 eventCounters_["touchmove"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchmove", msg));
                 }
@@ -313,7 +315,7 @@
                 }
                 eventCounters_["touchenter"].count += 1;
                 eventCounters_["touchenter"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchenter", msg));
                 }
@@ -329,7 +331,7 @@
                 }
                 eventCounters_["touchleave"].count += 1;
                 eventCounters_["touchleave"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchleave", msg));
                 }
@@ -346,7 +348,7 @@
                 }
                 eventCounters_["touchcancel"].count += 1;
                 eventCounters_["touchcancel"].updated = false;
-                if (!msg.defaultPrevented)
+                if (dispatch && !msg.defaultPrevented)
                 {
                     window.dispatchEvent(new CustomEvent("touchcancel", msg));
                 }
@@ -557,4 +559,9 @@
         }
         return count;
     };
+
+    eventMonitor.toggleDispatching = function () {
+        dispatch = !dispatch;
+    };
+
 })();

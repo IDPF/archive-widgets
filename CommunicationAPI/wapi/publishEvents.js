@@ -350,6 +350,12 @@
 
     window.eventPublisher = {};
 
+
+    /**
+     * Adds listener for events and then propagates those events
+     * to the parent window
+     * @param {Array.<string>} events to propagte.
+     */
     window.eventPublisher.publishEvents = function (events) {
         for (var i = 0; i < events.length; i++)
         {
@@ -365,10 +371,15 @@
         }
     }
 
+
+    /**
+     * Removes listener for events
+     * @param {Array.<string>} events to remove.
+     */
     window.eventPublisher.unpublishEvents = function (events) {
         for (var i = 0; i < events.length; i++)
         {
-            var key = events[i].slice(1);
+            var key = events[i];
             if (eventPublish_[key])
             {
                 if (eventPublish_[key].active)
@@ -381,7 +392,9 @@
     }
 
 
-    /* debugging */
+    /* debugging - call this from the javascript console window to see
+     * what events have been subscribed to
+     */
     window.eventPublisher.publishedEvents = function () {
         var publishedEvents = [];
         for (var key in eventPublish_)

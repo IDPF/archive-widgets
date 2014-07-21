@@ -220,15 +220,6 @@
 
 
     /**
-     * Broadcast a message to all windows.
-     * @param {string} topicName
-     * @param {*} data to publish.
-     */
-    wapi.broadcast = function (data) {
-        wapi.publish_(topicName, new wapi.TopicMessage_("publish", "broadcast", true, data));
-    };
-
-    /**
      * Publish a message topic.
      * @param {string} topicName
      * @param {*} data to publish.
@@ -242,6 +233,7 @@
      * Publish a message topic.
      * @param {string} topicName
      * @param {TopicMessage_} message to publish.
+     * @private
      */
     wapi.publish_ = function (topicName, message) {
         var topic = wapi.TopicMap_[topicName];
@@ -365,36 +357,42 @@
 
     window.wapi = wapi;
 
-    wapi.subscribe("broadcast", function (msg) {
-        window.console.log(window.document.URL + " - broadcast: " + msg);
+
+    /* EVENT PROPAGATION */
+    wapi.subscribe("eventSubscribe", function (msg) {
+        window.console.log(window.document.URL + " - eventSubscribe: " + msg);
 
         if (window.eventPublisher)
         {
             if (msg instanceof Array)
             {
-                if (msg[0].indexOf("-") == 0)
-                {
-                    window.eventPublisher.unpublishEvents(msg);
-                }
-                else
-                {
-                    window.eventPublisher.publishEvents(msg);
-                }
+                window.eventPublisher.publishEvents(msg);
             }
             else
             {
-                if (msg.indexOf("-") == 0)
-                {
-                    window.eventPublisher.unpublishEvents([msg]);
-                }
-                else
-                {
-                    window.eventPublisher.publishEvents([msg]);
-                }
+                window.eventPublisher.publishEvents([msg]);
             }
         }
     });
 
+    wapi.subscribe("eventUnsubscribe", function (msg) {
+        window.console.log(window.document.URL + " - eventUnsubscribe: " + msg);
+
+        if (window.eventPublisher)
+        {
+            if (msg instanceof Array)
+            {
+                window.eventPublisher.unpublishEvents(msg);
+            }
+            else
+            {
+                window.eventPublisher.unpublishEvents([msg]);
+            }
+        }
+    });
+
+
+    /* startup - not entirely clear if this will suffice */
     wapi.subscribe("ready", function (msg) {
         window.console.log(window.document.URL + ": " + wapi.widgetID + ":" + msg);
     });

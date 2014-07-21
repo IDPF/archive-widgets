@@ -17,7 +17,7 @@
         ];
         if (e.srcElement.checked)
         {
-            wapi.publish("broadcast", mouseSubscribe);
+            wapi.publish("eventSubscribe", mouseSubscribe);
             for (var i = 0; i < mouseSubscribe.length; i++)
             {
                 document.getElementById("sub_" + mouseSubscribe[i]).checked = true;
@@ -26,7 +26,7 @@
         }
         else
         {
-            wapi.publish("broadcast", negateEvents(mouseSubscribe));
+            wapi.publish("eventUnsubscribe", mouseSubscribe);
             for (var i = 0; i < mouseSubscribe.length; i++)
             {
                 document.getElementById("sub_" + mouseSubscribe[i]).checked = false;
@@ -39,7 +39,7 @@
         var keySubscribe = ["keydown", "keypress", "keyup"];
         if (e.srcElement.checked)
         {
-            wapi.publish("broadcast", keySubscribe);
+            wapi.publish("eventSubscribe", keySubscribe);
             for (var i = 0; i < keySubscribe.length; i++)
             {
                 document.getElementById("sub_" + keySubscribe[i]).checked = true;
@@ -48,7 +48,7 @@
         }
         else
         {
-            wapi.publish("broadcast", negateEvents(keySubscribe));
+            wapi.publish("eventUnsubscribe", keySubscribe);
             for (var i = 0; i < keySubscribe.length; i++)
             {
                 document.getElementById("sub_" + keySubscribe[i]).checked = false;
@@ -61,7 +61,7 @@
         var touchSubscribe = ["touchstart", "touchend", "touchmove", "touchenter", "touchleave", "touchcancel"];
         if (e.srcElement.checked)
         {
-            wapi.publish("broadcast", touchSubscribe);
+            wapi.publish("eventSubscribe", touchSubscribe);
             for (var i = 0; i < touchSubscribe.length; i++)
             {
                 document.getElementById("sub_" + touchSubscribe[i]).checked = true;
@@ -70,7 +70,7 @@
         }
         else
         {
-            wapi.publish("broadcast", negateEvents(touchSubscribe));
+            wapi.publish("eventUnsubscribe", touchSubscribe);
             for (var i = 0; i < touchSubscribe.length; i++)
             {
                 document.getElementById("sub_" + touchSubscribe[i]).checked = false;
@@ -87,7 +87,7 @@
         ];
         if (e.srcElement.checked)
         {
-            wapi.publish("broadcast", pointerSubscribe);
+            wapi.publish("eventSubscribe", pointerSubscribe);
             for (var i = 0; i < pointerSubscribe.length; i++)
             {
                 document.getElementById("sub_" + pointerSubscribe[i]).checked = true;
@@ -96,7 +96,7 @@
         }
         else
         {
-            wapi.publish("broadcast", negateEvents(pointerSubscribe));
+            wapi.publish("eventUnsubscribe", pointerSubscribe);
             for (var i = 0; i < pointerSubscribe.length; i++)
             {
                 document.getElementById("sub_" + pointerSubscribe[i]).checked = false;
@@ -107,13 +107,13 @@
 
 
     function subscribe_(eventType) {
-        wapi.publish("broadcast", eventType);
+        wapi.publish("eventSubscribe", eventType);
         wapi.subscribe(eventType, eventMonitor.eventCounters[eventType].handler);
     }
 
     function unsubscribe_(eventType) {
-        wapi.publish("broadcast", "-" + eventType);
-        wapi.subscribe(eventType, eventMonitor.eventCounters[eventType].handler);
+        wapi.publish("eventUnsubscribe", eventType);
+        wapi.unsubscribe(eventType, eventMonitor.eventCounters[eventType].handler);
     }
 
 
