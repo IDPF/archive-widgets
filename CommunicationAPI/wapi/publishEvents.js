@@ -1,7 +1,16 @@
-// the set of events that we monitor will be an interesting topic
-
 (function () {
 
+    if (!wapi)
+    {
+        alert("no widget support, include widget_api.js");
+    }
+
+
+    /**
+     * Clone MouseEvent
+     * @param {MouseEvent} e - event to clone.
+     * @return {Object} data of cloned event
+     */
     function cloneMouseEvent_(e) {
         var mouseEvent = {
             class: "mouse",
@@ -19,6 +28,11 @@
         return mouseEvent;
     };
 
+    /**
+     * Clone KeyEvent
+     * @param {KeyEvent} e - event to clone.
+     * @return {Object} data of cloned event
+     */
     function cloneKeyEvent_(e) {
         var keyEvent = {
             class: "key",
@@ -37,6 +51,12 @@
         return keyEvent;
     };
 
+
+    /**
+     * Clone TouchEvent
+     * @param {TouchEvent} e - event to clone.
+     * @return {Object} data of cloned event
+     */
     function cloneTouchEvent_(e) {
         function cloneTouches(touches) {
             var clonedTouches = [];
@@ -55,11 +75,19 @@
             type: e.type,
             timeStamp: e.timeStamp,
             touches: cloneTouches(e.touches),
+            taregtTouches: cloneTouches(e.targetTouches),
+            changedTouches: cloneTouches(e.changedTouches),
             defaultPrevented: e.defaultPrevented
         };
         return touchEvent;
     };
 
+
+    /**
+     * Clone event
+     * @param {Event} e - event to clone.
+     * @return {Object} data of cloned event
+     */
     function clonePointerEvent_(e) {
         var pointerEvent = {
             class: "pointer",
@@ -71,6 +99,11 @@
     };
 
 
+    /**
+     * Clone event
+     * @param {Event} e - event to clone.
+     * @return {Object} data of cloned event
+     */
     function cloneCustomEvent_(e) {
         var customEvent = {
             class: "custom",
@@ -348,15 +381,15 @@
         }
     };
 
-    window.eventPublisher = {};
 
+    var eventPublisher = {};
 
     /**
      * Adds listener for events and then propagates those events
      * to the parent window
      * @param {Array.<string>} events to propagte.
      */
-    window.eventPublisher.publishEvents = function (events) {
+    eventPublisher.publishEvents = function (events) {
         for (var i = 0; i < events.length; i++)
         {
             var key = events[i];
@@ -376,7 +409,7 @@
      * Removes listener for events
      * @param {Array.<string>} events to remove.
      */
-    window.eventPublisher.unpublishEvents = function (events) {
+    eventPublisher.unpublishEvents = function (events) {
         for (var i = 0; i < events.length; i++)
         {
             var key = events[i];
@@ -392,10 +425,12 @@
     }
 
 
-    /* debugging - call this from the javascript console window to see
+    /**
+     * Debugging - call this from the javascript console window to see
      * what events have been subscribed to
+     * @return {Array.<string>} Events registered.
      */
-    window.eventPublisher.publishedEvents = function () {
+    wapi.publishedEvents = function () {
         var publishedEvents = [];
         for (var key in eventPublish_)
         {
@@ -410,6 +445,33 @@
         return publishedEvents;
     }
 
+
+    /* EVENT PROPAGATION */
+    wapi.subscribe("eventSubscribe", function (msg) {
+        window.console.log(window.document.URL + " - eventSubscribe: " + msg);
+
+        if (msg instanceof Array)
+        {
+            eventPublisher.publishEvents(msg);
+        }
+        else if (typeof(msg) === "string")
+        {
+            eventPublisher.publishEvents([msg]);
+        }
+    });
+
+    wapi.subscribe("eventUnsubscribe", function (msg) {
+        window.console.log(window.document.URL + " - eventUnsubscribe: " + msg);
+
+        if (msg instanceof Array)
+        {
+            eventPublisher.unpublishEvents(msg);
+        }
+        else if (typeof(msg) === "string")
+        {
+            eventPublisher.unpublishEvents([msg]);
+        }
+    });
 
 })();
 

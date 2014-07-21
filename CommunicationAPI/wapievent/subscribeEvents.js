@@ -282,10 +282,15 @@
     }, false);
 
 
-    window.print_eventinfo = false;
+    window.print_eventinfo = true;
 
     document.getElementById("print_eventinfo").addEventListener("click", function (e) {
         print_eventinfo = e.srcElement.checked;
+        if (!print_eventinfo)
+        {
+            var eventinfo = document.getElementById("eventinfo");
+            eventinfo.innerHTML = "";
+        }
     }, false);
 
     window.printEventInfo = function (msg) {

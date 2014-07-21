@@ -58,7 +58,7 @@
 <body>
 <div id="source">src</div>
 <div id="status">No status</div>
-<div id="focus_status"></div>
+<div id="focus_status">blurred</div>
 <div id="area">
     <div>This area sucks up click &amp; mouseMove events (e.g calls preventDefault
         on the click &amp; mouseMove).
@@ -87,12 +87,26 @@
     var thumbDown = false;
     var deltaX = 0;
 
+    thumb.addEventListener("touchenter", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
     thumb.addEventListener("mousedown", function (e) {
         window.console.log("Thumb: " + e.type);
         deltaX = e.clientX - thumb.offsetLeft;
         thumbDown = true;
         e.preventDefault();
     }, false);
+
+    thumb.addEventListener("touchstart", function (e) {
+        window.console.log("Thumb: " + e.type);
+        deltaX = e.touches[0].clientX - thumb.offsetLeft;
+        thumbDown = true;
+        e.preventDefault();
+    }, false);
+
 
     thumb.addEventListener("mouseenter", function (e) {
         window.console.log("Thumb: " + e.type);
@@ -113,6 +127,16 @@
         }
     }, false);
 
+    thumb.addEventListener("touchmove", function (e) {
+        window.console.log("Thumb: " + e.type);
+        if (thumbDown)
+        {
+            thumb.style.left = (e.touches[0].clientX - deltaX) + "px";
+            e.preventDefault();
+        }
+    }, false);
+
+
     thumb.addEventListener("mouseout", function (e) {
         window.console.log("Thumb: " + e.type);
         thumbDown = false;
@@ -124,7 +148,26 @@
         e.preventDefault();
     }, false);
 
+
     thumb.addEventListener("mouseup", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("touchleave", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("touchend", function (e) {
+        window.console.log("Thumb: " + e.type);
+        thumbDown = false;
+        e.preventDefault();
+    }, false);
+
+    thumb.addEventListener("touchcancel", function (e) {
         window.console.log("Thumb: " + e.type);
         thumbDown = false;
         e.preventDefault();

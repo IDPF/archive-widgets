@@ -357,41 +357,6 @@
 
     window.wapi = wapi;
 
-
-    /* EVENT PROPAGATION */
-    wapi.subscribe("eventSubscribe", function (msg) {
-        window.console.log(window.document.URL + " - eventSubscribe: " + msg);
-
-        if (window.eventPublisher)
-        {
-            if (msg instanceof Array)
-            {
-                window.eventPublisher.publishEvents(msg);
-            }
-            else
-            {
-                window.eventPublisher.publishEvents([msg]);
-            }
-        }
-    });
-
-    wapi.subscribe("eventUnsubscribe", function (msg) {
-        window.console.log(window.document.URL + " - eventUnsubscribe: " + msg);
-
-        if (window.eventPublisher)
-        {
-            if (msg instanceof Array)
-            {
-                window.eventPublisher.unpublishEvents(msg);
-            }
-            else
-            {
-                window.eventPublisher.unpublishEvents([msg]);
-            }
-        }
-    });
-
-
     /* startup - not entirely clear if this will suffice */
     wapi.subscribe("ready", function (msg) {
         window.console.log(window.document.URL + ": " + wapi.widgetID + ":" + msg);

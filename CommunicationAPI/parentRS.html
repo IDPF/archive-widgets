@@ -44,7 +44,7 @@
 
         #counters {
             position: absolute;
-            top: 100px;
+            top: 355px;
             left: 700px;
             width: 250px;
             height: 750px;
@@ -55,10 +55,10 @@
 
         #eventstuff {
             position: absolute;
-            top: 860px;
+            top: 100px;
             left: 700px;
             width: 230px;
-            height: 280px;
+            height: 225px;
             font-size: 14px;
             font-family: Consolas, sans-serif;
             border: 1px solid red;
@@ -84,12 +84,12 @@
 <body>
 <div id="source">src</div>
 <div id="status">No status</div>
-<div id="focus_status"></div>
+<div id="focus_status">blurred</div>
 
 <div id="mousetracker">
     <div class="dispatch" style="padding:10px;">
         <label>
-            Dispatch move events received from widget:
+            Dispatch "move" events received from widget:
         </label>
         <input id="dispatchid" type="checkbox" name="dispatcher" checked>
     </div>
@@ -341,7 +341,7 @@
 </div>
 
 <div id="eventstuff">
-    <div><label>Print event info</label><input type="checkbox" id="print_eventinfo"></div>
+    <div><label>Display subscribed: </label><input type="checkbox" id="print_eventinfo" checked></div>
     <div id="eventinfo"></div>
 </div>
 
@@ -411,7 +411,7 @@
 <script src="support/focus.js"></script>
 <script src="support/tracker.js"></script>
 
-<script src="wapi/subscribeEvents.js"></script>
-<script src="wapi/monitorEvents.js"></script>
+<script src="wapievent/subscribeEvents.js"></script>
+<script src="wapievent/monitorEvents.js"></script>
 </body>
 </html>
