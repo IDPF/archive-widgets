@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+      "connect": "2.24.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
