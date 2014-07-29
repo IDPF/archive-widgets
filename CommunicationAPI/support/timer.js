@@ -32,5 +32,5 @@ function handlePause(msg) {
     }
 }
 
-source.innerHTML = window.document.URL;
+source.innerHTML = window.document.URL + ":" + wapi.widgetID;
 handlePause("resume");

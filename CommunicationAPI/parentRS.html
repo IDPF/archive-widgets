@@ -16,6 +16,14 @@
             height: 800px;
         }
 
+        #epubdoc2 {
+            position: absolute;
+            top: 100px;
+            left: 1000px;
+            width: 600px;
+            height: 800px;
+        }
+
         #controls {
             position: absolute;
             top: 930px;
@@ -27,7 +35,7 @@
         }
 
         .method, .events, .pubsub {
-            border: 2px solid black;
+            border: 2px solid red;
             margin: 5px;
         }
 
@@ -96,8 +104,10 @@
     <div id="mousetrackerdata" style="padding-left:10px"></div>
 </div>
 
-<!--iframe id="epubdoc" src="http://publisher.cr:8080/epubdoc.html"></iframe-->
 <iframe id="epubdoc" src="epubdoc.html"></iframe>
+<!--iframe id="epubdoc" src="http://publisher.cr:8080/epubdoc.html"></iframe-->
+<iframe id="epubdoc2" src=""></iframe>
+
 
 <div id="controls">
     <div class="method" style="margin:10px;">
@@ -113,6 +123,12 @@
         <input id="topic" type="text" name="Topic" value="broadcast" style="width:100px">
         <input id="data" type="text" name="Data" value="mousemove">
         <input id="topicTester" type="button" name="Events" value="Publish">
+    </div>
+    <div class="events" style="margin:10px;">
+        <label>
+            Load new iframe:
+        </label>
+        <input id="newiframe" type="button" name="Topic" value="Load" style="width:100px">
     </div>
 </div>
 
@@ -385,6 +401,11 @@
         }
     }, false);
 
+    var iframeButton = document.getElementById("newiframe");
+    iframeButton.addEventListener("click", function (e) {
+        var newiframe = document.getElementById("epubdoc2");
+        newiframe.src = "epubdoc.html";
+    });
 
 </script>
 <script>
@@ -413,5 +434,6 @@
 
 <script src="wapievent/subscribeEvents.js"></script>
 <script src="wapievent/monitorEvents.js"></script>
+<script src="wapi/publishEvents.js"></script>
 </body>
 </html>

@@ -35,101 +35,39 @@
 
 
 (function () {
-    var wapi = {};
 
-    wapi.verbose = false;
-
-    /* Hash of topicName {string} to iframe element reference and handler. */
-    wapi.TopicMap_ = {};
+    /* debugging stuff */
 
     /**
-     * Constructor for topic handler.
-     * @param {string} topicname -.
-     * @constructor
+     * Assertion testing function.
+     * @param {boolean} book - value of assertion.
+     * @param {string} msg to show on failed assertion.
      */
-    wapi.TopicHandler_ = function (topicName) {
-        this.topic_ = topicName;
-        this.subscribers_ = [];
-        this.handlers_ = [];
-    };
-
+    function debugAssert(bool, msg) {
+        if (!bool)
+        {
+            alert("AssertionFailure: " + msg);
+        }
+    }
 
     /**
-     * @param {function} f new handler.
+     * Message counter.
+     * @type {number}
      */
-    wapi.TopicHandler_.prototype.addHandler = function (f) {
-        this.handlers_.push(f);
-    };
-
+    var counter = 0;
 
     /**
-     * @param {function} f new handler.
+     * Turn console.log spew on or off.
+     * @type {boolean}
+     * @private
      */
-    wapi.TopicHandler_.prototype.removeHandler = function (f) {
-        var i = this.handlers_.indexOf(f);
-        if (i >= 0)
-        {
-            this.handlers_.splice(i, 1);
-        }
-    };
-
-
-    wapi.TopicHandler_.prototype.callHandlers = function (data) {
-        for (var i = 0; i < this.handlers_.length; i++)
-        {
-            this.handlers_[i](data.payload.message);
-        }
-    };
-
-    wapi.TopicHandler_.prototype.anyHandlers = function () {
-        return this.handlers_.length > 0;
-    };
-
-    /**
-     * @param {} s subscriber.
-     */
-    wapi.TopicHandler_.prototype.addSubscriber = function (s) {
-        /**
-         * Need to protect against duplicate subscribers,
-         * which happens when a child and a grandchild subscribe
-         * to the same topic
-         */
-        if (this.subscribers_.indexOf(s) < 0)
-        {
-            this.subscribers_.push(s);
-        }
-    };
-
-
-    /**
-     * @param {} s subscriber.
-     */
-    wapi.TopicHandler_.prototype.removeSubscriber = function (s) {
-        // Find and remove item from an array
-        var i = this.subscribers_.indexOf(s);
-        if (i >= 0)
-        {
-            this.subscribers_.splice(i, 1);
-        }
-    };
-
-
-    wapi.TopicHandler_.prototype.callSubscribers = function (message) {
-        for (var i = 0; i < this.subscribers_.length; i++)
-        {
-            this.subscribers_[i].postMessage(message, "*");
-        }
-    };
-
-
-    wapi.TopicHandler_.prototype.anySubscribers = function () {
-        return this.subscribers_.length > 0;
-    };
+    var verbose_ = false;
+    /* end debugging stuff */
 
     /**
      * @return {string} a uuid.
      */
-    wapi.generateUUID = function () {
+    function generateUUID_() {
         var d = new Date().getTime();
         var uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = (d + Math.random() * 16) % 16 | 0;
@@ -143,8 +81,248 @@
     /**
      * ID of widget
      * @type {string} guid -.
+     * @private
      */
-    wapi.widgetID = wapi.generateUUID();
+    var widgetID_ = generateUUID_();
+
+
+    var childIDs_ = {};
+
+    var Widget = {};
+
+    /**
+     * Constructor for widgetNode
+     * @param {string} id -.
+     * @constructor
+     */
+    Widget = function (id, url) {
+        this.path_ = url;
+        this.widgetid_ = id;
+    };
+
+    /**
+     * Child widgets
+     * @type {Widget}
+     */
+    var widgetTree_ = null;
+
+
+    /**
+     * Add widget path to tree
+     * @param {Array.<string>} widgetPath - array of ids.
+     */
+    function addWidgetNode(widgetPath) {
+        if (widgetTree_ === null)
+        {
+            debugAssert(widgetPath[0].widgetid_ === widgetID_);
+            widgetTree_ = widgetPath[0];
+        }
+
+        function addNode(node, path) {
+            if (path.length === 0)
+            {
+                return;
+            }
+
+            var currentid = path[0].widgetid_;
+
+            if (!node.children_)
+            {
+                node.children_ = {};
+            }
+
+            if (!node.children_[currentid])
+            {
+                node.children_[currentid] = path[0];
+            }
+            addNode(node.children_[currentid], path.slice(1));
+        }
+
+        addNode(widgetTree_, widgetPath.slice(1));
+    }
+
+    var findWidgetPath = function (id) {
+        var path = [];
+
+        function find(node, id, path) {
+            if (node.widgetid_ === id)
+            {
+                path.push(node.widgetid_);
+                return true;
+            }
+
+            if (node.children_)
+            {
+                for (var key in node.children_)
+                {
+                    if (find(node.children_[key], id, path))
+                    {
+                        path.unshift(node.widgetid_);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        find(widgetTree_, id, path);
+        return path;
+    }
+
+
+    /**
+     *
+     * @type {{}}
+     * @private
+     */
+    var TopicMap_ = {};
+
+
+    /**
+     * An object to store handlers and subscribers to a
+     * topic.
+     * @type {{}}
+     * @private
+     */
+    var TopicHandler_ = {};
+
+    /**
+     * Constructor for topic handler.
+     * @param {string} topicname -.
+     * @constructor
+     */
+    TopicHandler_ = function (topicName) {
+        this.topic_ = topicName;
+
+        /**
+         * array of iframe window
+         * @type {Window}
+         */
+        this.subscribers_ = [];
+
+        /**
+         * array of functions
+         * @type {function}
+         */
+        this.handlers_ = [];
+    };
+
+    /**
+     * @param {function} f new handler.
+     */
+    TopicHandler_.prototype.addHandler = function (f) {
+        this.handlers_.push(f);
+    };
+
+
+    /**
+     * Remove the function handler from this topic
+     * @param {function} f new handler.
+     */
+    TopicHandler_.prototype.removeHandler = function (f) {
+        var i = this.handlers_.indexOf(f);
+        if (i >= 0)
+        {
+            this.handlers_.splice(i, 1);
+        }
+    };
+
+
+    /**
+     * @param {TopicMessage_} message to publish.
+     */
+    TopicHandler_.prototype.callHandlers = function (message) {
+        for (var i = 0; i < this.handlers_.length; i++)
+        {
+            if (message.widgetSourceID_ != widgetID_)
+            {
+                this.handlers_[i](message.payload.topicData);
+            }
+        }
+    };
+
+    /**
+     * @param {TopicMessage_} message to publish.
+     */
+    TopicHandler_.prototype.callHandlers2 = function (message) {
+        for (var i = 0; i < this.handlers_.length; i++)
+        {
+            if (message.widgetSourceID_ != widgetID_)
+            {
+                this.handlers_[i](message);
+            }
+        }
+    };
+
+    /**
+     * Does the TopicHandler have any handlers
+     * @return {boolean}
+     */
+    TopicHandler_.prototype.anyHandlers = function () {
+        return this.handlers_.length > 0;
+    };
+
+    /**
+     * Add a child window as a subscriber to this topic.
+     * @param {Window} win subscriber.
+     * @param {string} widgetid -.
+     */
+    TopicHandler_.prototype.addSubscriber = function (win, widgetid) {
+        /**
+         * The window can only exist in the current windows context,
+         * so no need to protect against duplicate subscribers,
+         * which happens when a child and a grandchild subscribe
+         * to the same topic
+         */
+        if (this.subscribers_.indexOf(win) < 0)
+        {
+            this.subscribers_.push(win);
+        }
+
+        if (!childIDs_[widgetid])
+        {
+            childIDs_[widgetid] = win;
+        }
+        else
+        {
+            debugAssert(childIDs_[widgetid] === win);
+        }
+    };
+
+
+    /**
+     * Remove the child window as a subscriber to this topic.
+     * @param {Window} win subscriber.
+     */
+    TopicHandler_.prototype.removeSubscriber = function (win) {
+        // Find and remove item from an array
+        var i = this.subscribers_.indexOf(win);
+        if (i >= 0)
+        {
+            this.subscribers_.splice(i, 1);
+        }
+    };
+
+
+    /**
+     * Call all my subscribers
+     * @param {TopicMessage_} message -.
+     */
+    TopicHandler_.prototype.callSubscribers = function (message) {
+        for (var i = 0; i < this.subscribers_.length; i++)
+        {
+            this.subscribers_[i].postMessage(message, "*");
+        }
+    };
+
+
+    /**
+     * Does the TopicHandler have any subscribers
+     * @return {boolean}
+     */
+    TopicHandler_.prototype.anySubscribers = function () {
+        return this.subscribers_.length > 0;
+    };
 
 
     /**
@@ -152,7 +330,14 @@
      * @type {Date} starttime
      * for debugging startup
      */
-    wapi.startTime = new Date().getTime();
+    var startTime = new Date().getTime();
+
+    /**
+     * The message used to pass topics between components/windows.
+     * @type {{}}
+     * @private
+     */
+    var TopicMessage_ = {};
 
     /**
      * Constructor for messages.
@@ -162,70 +347,50 @@
      * @param {Object | string | undefined} opt_data
      * @constructor
      */
-    wapi.TopicMessage_ = function (method, topicName, capture, opt_data) {
+    TopicMessage_ = function (method, topicName, capture, opt_data) {
         this.type_ = "message";
-        this.widgetID = wapi.widgetID;
-        this.messageSource = wapi.widgetID;
-        this.id = wapi.generateUUID();
-        this.method = method;
+
+        this.widgetSourceID_ = widgetID_;
+        this.widgetPath_ = [];
+        this.id = generateUUID_();
+
+        this.time = +new Date();
+        this.counter = ++counter;
+
         this.capture = capture;
-        this.payload = {};
-        this.payload.topic = topicName;
-        if (opt_data)
-        {
-            this.payload.message = opt_data;
-        }
+        this.bubbleonly = false;	// if true this message only goes to parents
+
+        this.method = method;
+
+        this.payload = {
+            topic: topicName,
+            topicData: opt_data
+        };
+    };
+
+    var wapi = {
+        /* debug */
+        TopicMap_: TopicMap_,
+        verbose: verbose_,
+        childIDs: childIDs_,
+        widgetTree: widgetTree_,
+        widgetID: widgetID_
+
     };
 
 
-    /**
-     * Subscribe to a topic
-     * @param {string} topicName name of topic.
-     * @param {function} func to handle topic messages.
-     */
-    wapi.subscribe = function (topicName, func) {
-
-        if (!wapi.TopicMap_[topicName])
-        {
-            wapi.TopicMap_[topicName] = new wapi.TopicHandler_(topicName);
-        }
-        wapi.TopicMap_[topicName].addHandler(func);
-
-        /* Tell parent I am subscribing to topic. */
-        if (window.parent != window)
-        {
-            window.parent.postMessage(new wapi.TopicMessage_("subscribe", topicName, true), "*");
-        }
-    };
-
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
     /**
-     * Unsubscribe from a topic
-     * @param {string} topicName
-     * @param {Object} data to publish.
-     */
-    wapi.unsubscribe = function (topicName, func) {
-        if (wapi.TopicMap_[topicName])
-        {
-            var topic = wapi.TopicMap_[topicName];
-            topic.removeHandler(func);
-
-            if (!topic.anyHandlers() && !topic.anySubscribers())
-            {
-                window.parent.postMessage(new wapi.TopicMessage_("unsubscribe", topicName, true), "*");
-                delete wapi.TopicMap_[topicName];
-            }
-        }
-    };
-
-
-    /**
-     * Publish a message topic.
+     * Publish a message topic to only my ancestors.
      * @param {string} topicName
      * @param {*} data to publish.
      */
-    wapi.publish = function (topicName, data) {
-        wapi.publish_(topicName, new wapi.TopicMessage_("publish", topicName, true, data));
+    wapi.publishToParent = function (topicName, data) {
+        var message = new TopicMessage_("ready", topicName, true, data);
+        message.bubbleonly = true;
+        message.widgetPath_.unshift(new Widget(widgetID_, document.URL));
+        wapi.publish_(topicName, message, window);
     };
 
 
@@ -236,13 +401,7 @@
      * @private
      */
     wapi.publish_ = function (topicName, message) {
-        var topic = wapi.TopicMap_[topicName];
-
-        if (wapi.verbose)
-        {
-            window.console.log("Widget API message: send to parent - " +
-                                   topicName + ", " + window.document.URL);
-        }
+        var topic = TopicMap_[topicName];
 
         if (window.parent === window)
         {
@@ -254,6 +413,10 @@
 
         if (message.capture === true)
         {
+            if (message.bubbleonly)
+            {
+                topic.callHandlers(message);
+            }
             /* still in capture phase, send to parent */
             window.parent.postMessage(message, "*");
         }
@@ -261,6 +424,48 @@
         {
             /* walk back down the tree */
             topic.callHandlers(message);
+            if (!message.bubbleonly)
+            {
+                topic.callSubscribers(message);
+            }
+        }
+    };
+
+
+    /**
+     * Publish a message topic.
+     * @param {string} topicName
+     * @param {TopicMessage_} message to publish.
+     * @private
+     */
+    wapi.systemPublish_ = function (topicName, message) {
+        var topic = TopicMap_[topicName];
+
+        if (message.capture === true)
+        {
+            message.widgetPath_.unshift(new Widget(widgetID_, document.URL));
+            if (message.bubbleonly)
+            {
+                topic.callHandlers2(message);
+            }
+
+            if (window.parent === window)
+            {
+                /* we have reached the parent,
+                 * this will need to be tweaked to account for RS
+                 */
+                message.capture = false;
+            }
+
+
+            /* still in capture phase, send to parent */
+            window.parent.postMessage(message, "*");
+        }
+        else if (topic && !message.bubbleonly)
+        {
+            /* walk back down the tree */
+            topic.callHandlers2(message);
+
             topic.callSubscribers(message);
         }
     };
@@ -273,45 +478,56 @@
      * @param {{*}} data to publish.
      */
     wapi.send = function (win, topicName, data) {
-        win.postMessage(new wapi.TopicMessage_("publish", topicName, false, data), "*");
+        win.postMessage(new TopicMessage_("publish", topicName, false, data), "*");
     };
 
 
-    window.addEventListener("message", function (event) {
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+    /**
+     * The message handler.
+     */
+    window.addEventListener("message", function (event) {
         /**
          * Subscribe to a topic.
-         * @param {string} topicName - name of topic.
-         * @param {Event} event -.
+         * @param {Window} srcWin -.
+         * @param {TopicMessage_} message -.
          */
-        function subscribe(topicName, event) {
-            if (!wapi.TopicMap_[topicName])
+        function subscribe(srcWin, message) {
+            var topicName = message.payload.topic;
+            var srcWidgetID = message.widgetSourceID_;
+
+            if (!TopicMap_[topicName])
             {
-                wapi.TopicMap_[topicName] = new wapi.TopicHandler_(topicName);
+                TopicMap_[topicName] = new TopicHandler_(topicName);
             }
-            wapi.TopicMap_[topicName].addSubscriber(event.source);
+            TopicMap_[topicName].addSubscriber(srcWin, srcWidgetID);
             if (window.parent != window)
             {
-                window.parent.postMessage(new wapi.TopicMessage_("subscribe", topicName, true), "*");
+                window.parent.postMessage(new TopicMessage_("subscribe", topicName, true), "*");
             }
         }
 
 
         /**
          * Unsubscribe from the topic.
-         * @param {string} topicName - name of topic.
-         * @param {Event} event -.
+         * @param {Window} srcWin -.
+         * @param {TopicMessage_} message -.
          */
-        function unsubscribe(topicName, event) {
-            if (wapi.TopicMap_[topicName])
+        function unsubscribe(srcWin, message) {
+            var topicName = message.payload.topic;
+            var srcWidgetID = message.widgetSourceID_;
+
+            if (TopicMap_[topicName])
             {
-                var topic = wapi.TopicMap_[topicName];
-                topic.removeSubscriber(event.source);
+                var topic = TopicMap_[topicName];
+                topic.removeSubscriber(srcWin);
 
                 if (!topic.anyHandlers() && !topic.anySubscribers())
                 {
-                    window.parent.postMessage(new wapi.TopicMessage_("unsubscribe", topicName, true), "*");
-                    delete wapi.TopicMap_[topicName];
+                    window.parent.postMessage(new TopicMessage_("unsubscribe", topicName, true), "*");
+                    delete TopicMap_[topicName];
                 }
             }
         }
@@ -320,13 +536,26 @@
         /**
          * Publish the message to parent, child windows, and local handlers.
          * @param {Window} srcWin of message.
-         * @param {Object} message -.
+         * @param {TopicMessage_} message -.
          */
         function publish(srcWin, message) {
 
             var topicName = message.payload.topic;
 
-            wapi.publish_(topicName, message);
+            wapi.publish_(topicName, message, srcWin);
+        }
+
+
+        /**
+         * Publish the message to parent, child windows, and local handlers.
+         * @param {Window} srcWin of message.
+         * @param {TopicMessage_} message -.
+         */
+        function systemPublish(srcWin, message) {
+
+            var topicName = message.payload.topic;
+
+            wapi.systemPublish_(topicName, message, srcWin);
         }
 
 
@@ -335,15 +564,19 @@
             switch (event.data.method)
             {
                 case "subscribe":
-                    subscribe(event.data.payload.topic, event);
+                    subscribe(event.source, event.data);
                     break;
 
                 case "unsubscribe":
-                    unsubscribe(event.data.payload.topic, event);
+                    unsubscribe(event.source, event.data);
                     break;
 
                 case "publish":
                     publish(event.source, event.data);
+                    break;
+
+                case "ready":
+                    systemPublish(event.source, event.data);
                     break;
 
 
@@ -354,16 +587,204 @@
         }
     });
 
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+    /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
-    window.wapi = wapi;
+    /**
+     * Subscribe to a topic
+     * @param {string} topicName name of topic.
+     * @param {function} func to handle topic messages.
+     */
+    wapi.subscribe = function (topicName, func) {
 
-    /* startup - not entirely clear if this will suffice */
+        if (!TopicMap_[topicName])
+        {
+            TopicMap_[topicName] = new TopicHandler_(topicName);
+        }
+        TopicMap_[topicName].addHandler(func);
+
+        /* Tell parent I am subscribing to topic. */
+        if (window.parent != window)
+        {
+            window.parent.postMessage(new TopicMessage_("subscribe", topicName, true), "*");
+        }
+    };
+
+
+    /**
+     * Unsubscribe from a topic
+     * @param {string} topicName
+     * @param {Object} data to publish.
+     * @param {string} widgetid -.
+     */
+    wapi.unsubscribe = function (topicName, func) {
+        if (TopicMap_[topicName])
+        {
+            var topic = TopicMap_[topicName];
+            topic.removeHandler(func);
+
+            if (!topic.anyHandlers() && !topic.anySubscribers())
+            {
+                window.parent.postMessage(new TopicMessage_("unsubscribe", topicName, true), "*");
+                delete TopicMap_[topicName];
+            }
+        }
+    };
+
+
+    /**
+     * Publish a message topic.
+     * @param {string} topicName
+     * @param {*} data to publish.
+     */
+    wapi.publish = function (topicName, data) {
+        wapi.publish_(topicName, new TopicMessage_("publish", topicName, true, data), window);
+    };
+
+
+    /**
+     * unused as of yet.
+     * @param widgetid
+     * @param event
+     */
+    wapi.directSubscribe = function (widgetid, event) {
+        var path = findWidgetPath(widgetid);
+        window.console.log("directSubscribe: " + widgetid + ", " + event + ", [" + path.join(",") + "]");
+    };
+
+    /**
+     * Returns array of child widget ids.
+     * @returns {Array}
+     */
+    wapi.childWidgets = function () {
+        var ids = [];
+
+        for (var key in childIDs_)
+        {
+            if (childIDs_.hasOwnProperty(key))
+            {
+                try
+                {
+                    ids.push(key + ":" + childIDs_[key].document.URL)
+                }
+                catch (e)
+                {
+                    // catch and print out if document.URL can't be accessed
+                    // (cross domain violation)
+                    ids.push(key + "!")
+                }
+            }
+        }
+        return ids;
+    };
+
+
+    /**
+     * Returns an array of non system subscriptions
+     * @returns {Array}
+     */
+    wapi.subscriptions = function () {
+        // there are a few subscriptions are all components
+        // subscribe to at startup, so no need to broadcast
+        // these, we will remove.
+        var syslevelSubscriptions = ["ready", "eventSubscribe", "eventUnsubscribe"];
+
+        var subscriptions = [];
+
+        for (var key in TopicMap_)
+        {
+            if (TopicMap_.hasOwnProperty(key))
+            {
+                if (syslevelSubscriptions.indexOf(key) < 0)
+                {
+                    subscriptions.push(key);
+                }
+            }
+        }
+        return subscriptions;
+    };
+
+
+    /**
+     * Returns array of all DOM level events subscribed to.
+     * @returns {Array}
+     * @private
+     */
+    function subscribedEvents_() {
+        var subscribedEvents = [];
+
+        /* this list of events is provisional,
+         * need to explore different ways
+         * of getting a list of subscribedEvents
+         */
+        var potentialEvents = [
+            "click", "dblclick", "mousedown", "mouseup",
+            "mouseover", "mousemove", "mouseout",
+            "keydown", "keypress", "keyup",
+            "touchstart", "touchend", "touchmove", "touchenter", "touchleave", "touchcancel",
+            "pointerdown", "pointerup", "pointercancel", "pointermove",
+            "pointerover", "pointerout", "pointerenter", "pointerleave",
+            "gotpointercapture", "lostpointercapture"
+        ];
+
+        for (var key in TopicMap_)
+        {
+            if (TopicMap_.hasOwnProperty(key) && potentialEvents.indexOf(key) > -1)
+            {
+                subscribedEvents.push(key);
+            }
+        }
+        return subscribedEvents;
+    };
+
+
+    /**
+     * Startup
+     * Collect the paths of widget ids, not sure if this is still needed.
+     * Publish events to components that are now ready.
+     */
     wapi.subscribe("ready", function (msg) {
-        window.console.log(window.document.URL + ": " + wapi.widgetID + ":" + msg);
+        /* this is provisional, may not need it */
+        var ids = [];
+
+        for (var i = 0; i < msg.widgetPath_.length; i++)
+        {
+            ids.push(msg.widgetPath_[i].widgetid_);
+        }
+        window.console.log(window.document.URL + "-" + widgetID_ + "   received ready: " + ids.join(", "));
+        addWidgetNode(msg.widgetPath_);
+        /* end provisional, may not need it */
+
+        var events = subscribedEvents_();
+        if (events.length)
+        {
+            wapi.publish("eventSubscribe", events);
+        }
     });
 
-    wapi.publish("ready", window.document.URL + " - " + wapi.widgetID + ", " + wapi.startTime);
 
-    window.console.log("Widget API is loaded for " + wapi.widgetID + ", " + window.document.URL);
+    /**
+     *  TODO: pick the right event to publish READY
+     */
+    window.addEventListener("load", function (e) {
+        /* this will distribute the ready topic to
+         * just my ancestors.
+         */
+        wapi.publishToParent("ready", "ready");
+    }, false);
 
+
+    /**
+     * TODO: pick the correct inverse.
+     */
+    window.addEventListener("unload", function (e) {
+        /* this will distribute the ready topic to
+         * just my ancestors.
+         */
+    }, false);
+
+
+    wapi.debugSubscribedEvents = subscribedEvents_;
+
+    window.wapi = wapi;
 })();

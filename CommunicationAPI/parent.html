@@ -83,9 +83,6 @@
 
 <script>
     /* subscribe to the event call */
-    wapi.subscribe("ready", function (msg) {
-        window.console.log("ready: " + msg);
-    });
 
     wapi.subscribe("event", function (msg) {
         var e = document.getElementById("status");

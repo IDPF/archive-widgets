@@ -1,15 +1,5 @@
 (function () {
 
-
-    function negateEvents(sub) {
-        var unsub = [];
-        for (var i = 0; i < sub.length; i++)
-        {
-            unsub.push('-' + sub[i]);
-        }
-        return unsub;
-    }
-
     document.getElementById("sub_allmouse").addEventListener("click", function (e) {
         var mouseSubscribe = [
             "click", "dblclick", "mousedown", "mouseup",
@@ -303,6 +293,6 @@
                 eventinfo.innerHTML += "<div>" + key + ":" + msg[key] + "</div>";
             }
         }
-    }
+    };
 
 })();
