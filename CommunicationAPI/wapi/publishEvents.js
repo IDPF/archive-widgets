@@ -447,7 +447,7 @@
 
 
     /* EVENT PROPAGATION */
-    wapi.subscribe("eventSubscribe", function (msg) {
+    wapi.subscribe("sysEventSubscribe", function (msg) {
         window.console.log(window.document.URL + " - eventSubscribe: " + msg);
 
         if (msg instanceof Array)
@@ -460,7 +460,7 @@
         }
     });
 
-    wapi.subscribe("eventUnsubscribe", function (msg) {
+    wapi.subscribe("sysEventUnsubscribe", function (msg) {
         window.console.log(window.document.URL + " - eventUnsubscribe: " + msg);
 
         if (msg instanceof Array)

@@ -9,7 +9,7 @@ var timerid = null;
 function handlePause(msg) {
     var e = document.getElementById("status");
 
-    if (msg === "pause")
+    if (msg === "sysPause")
     {
         e.innerHTML = "Topic: [paused]";
 

@@ -47,13 +47,13 @@
         {
             subscribed = false;
             button.setAttribute("value", "Subscribe");
-            wapi.unsubscribe("pause", handlePause);
+            wapi.unsubscribe("sysPause", handlePause);
         }
         else
         {
             subscribed = true;
             button.setAttribute("value", "Unsubscribe");
-            wapi.subscribe("pause", handlePause);
+            wapi.subscribe("sysPause", handlePause);
         }
     });
 

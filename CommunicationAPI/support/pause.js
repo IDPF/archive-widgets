@@ -2,4 +2,4 @@
  * Sample code.
  */
 
-wapi.subscribe("pause", handlePause);
+wapi.subscribe("sysPause", handlePause);

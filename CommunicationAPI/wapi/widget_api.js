@@ -141,6 +141,11 @@
         addNode(widgetTree_, widgetPath.slice(1));
     }
 
+    /**
+     * Find the path to a widget using widget ids.
+     * @param {string} id -.
+     * @returns {Array.<string>}
+     */
     var findWidgetPath = function (id) {
         var path = [];
 
@@ -389,7 +394,7 @@
      * @param {*} data to publish.
      */
     function publishToParent_(topicName, data) {
-        var message = new TopicMessage_("ready", topicName, true, data);
+        var message = new TopicMessage_("methodReady", topicName, true, data);
         message.bubbleonly = true;
         message.widgetPath_.unshift(new Widget(widgetID_, document.URL));
         publish_(topicName, message, window);
@@ -484,7 +489,7 @@
          * @param {Window} srcWin -.
          * @param {TopicMessage_} message -.
          */
-        function subscribe(srcWin, message) {
+        function methodSubscribe(srcWin, message) {
             var topicName = message.payload.topic;
             var srcWidgetID = message.widgetSourceID_;
 
@@ -495,7 +500,7 @@
             TopicMap_[topicName].addSubscriber(srcWin, srcWidgetID);
             if (window.parent != window)
             {
-                window.parent.postMessage(new TopicMessage_("subscribe", topicName, true), "*");
+                window.parent.postMessage(new TopicMessage_("methodSubscribe", topicName, true), "*");
             }
         }
 
@@ -505,7 +510,7 @@
          * @param {Window} srcWin -.
          * @param {TopicMessage_} message -.
          */
-        function unsubscribe(srcWin, message) {
+        function methodUnscribe(srcWin, message) {
             var topicName = message.payload.topic;
             var srcWidgetID = message.widgetSourceID_;
 
@@ -516,7 +521,7 @@
 
                 if (!topic.anyHandlers() && !topic.anySubscribers())
                 {
-                    window.parent.postMessage(new TopicMessage_("unsubscribe", topicName, true), "*");
+                    window.parent.postMessage(new TopicMessage_("methodUnsubscribe", topicName, true), "*");
                     delete TopicMap_[topicName];
                 }
             }
@@ -528,7 +533,7 @@
          * @param {Window} srcWin of message.
          * @param {TopicMessage_} message -.
          */
-        function publish(srcWin, message) {
+        function methodPublish(srcWin, message) {
 
             var topicName = message.payload.topic;
 
@@ -541,7 +546,7 @@
          * @param {Window} srcWin of message.
          * @param {TopicMessage_} message -.
          */
-        function systemPublish(srcWin, message) {
+        function methodSystem(srcWin, message) {
 
             var topicName = message.payload.topic;
 
@@ -553,20 +558,20 @@
         {
             switch (event.data.method)
             {
-                case "subscribe":
-                    subscribe(event.source, event.data);
+                case "methodSubscribe":
+                    methodSubscribe(event.source, event.data);
                     break;
 
-                case "unsubscribe":
-                    unsubscribe(event.source, event.data);
+                case "methodUnsubscribe":
+                    methodUnscribe(event.source, event.data);
                     break;
 
-                case "publish":
-                    publish(event.source, event.data);
+                case "methodPublish":
+                    methodPublish(event.source, event.data);
                     break;
 
-                case "ready":
-                    systemPublish(event.source, event.data);
+                case "methodReady":
+                    methodSystem(event.source, event.data);
                     break;
 
                 default:
@@ -595,7 +600,7 @@
         /* Tell parent I am subscribing to topic. */
         if (window.parent != window)
         {
-            window.parent.postMessage(new TopicMessage_("subscribe", topicName, true), "*");
+            window.parent.postMessage(new TopicMessage_("methodSubscribe", topicName, true), "*");
         }
     };
 
@@ -614,7 +619,7 @@
 
             if (!topic.anyHandlers() && !topic.anySubscribers())
             {
-                window.parent.postMessage(new TopicMessage_("unsubscribe", topicName, true), "*");
+                window.parent.postMessage(new TopicMessage_("methodUnsubscribe", topicName, true), "*");
                 delete TopicMap_[topicName];
             }
         }
@@ -627,7 +632,7 @@
      * @param {*} data to publish.
      */
     wapi.publish = function (topicName, data) {
-        publish_(topicName, new TopicMessage_("publish", topicName, true, data), window);
+        publish_(topicName, new TopicMessage_("methodPublish", topicName, true, data), window);
     };
 
 
@@ -648,7 +653,7 @@
      * @param {{*}} data to publish.
      */
     wapi.send = function (win, topicName, data) {
-        win.postMessage(new TopicMessage_("publish", topicName, false, data), "*");
+        win.postMessage(new TopicMessage_("methodPublish", topicName, false, data), "*");
     };
 
 
@@ -687,7 +692,7 @@
         // there are a few subscriptions are all components
         // subscribe to at startup, so no need to broadcast
         // these, we will remove.
-        var syslevelSubscriptions = ["ready", "eventSubscribe", "eventUnsubscribe"];
+        var sysLevelSubscriptions = ["sysReady", "sysEventSubscribe", "sysEventUnsubscribe"];
 
         var subscriptions = [];
 
@@ -695,7 +700,7 @@
         {
             if (TopicMap_.hasOwnProperty(key))
             {
-                if (syslevelSubscriptions.indexOf(key) < 0)
+                if (sysLevelSubscriptions.indexOf(key) < 0)
                 {
                     subscriptions.push(key);
                 }
@@ -743,7 +748,7 @@
      * Collect the paths of widget ids, not sure if this is still needed.
      * Publish events to components that are now ready.
      */
-    wapi.subscribe("ready", function (msg) {
+    wapi.subscribe("sysReady", function (msg) {
         /* this is provisional, may not need it */
         var ids = [];
 
@@ -758,7 +763,7 @@
         var events = subscribedEvents_();
         if (events.length)
         {
-            wapi.publish("eventSubscribe", events);
+            wapi.publish("sysEventSubscribe", events);
         }
     });
 
@@ -770,7 +775,7 @@
         /* this will distribute the ready topic to
          * just my ancestors.
          */
-        publishToParent_("ready", "ready");
+        publishToParent_("sysReady", "ready");
     }, false);
 
 

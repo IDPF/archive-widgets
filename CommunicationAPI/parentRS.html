@@ -369,13 +369,13 @@
     pause.addEventListener("click", function (e) {
         if (running === true)
         {
-            wapi.publish("pause", "pause");
+            wapi.publish("sysPause", "pause");
             running = false;
             pause.setAttribute("value", "Resume");
         }
         else
         {
-            wapi.publish("pause", "resume");
+            wapi.publish("sysPause", "resume");
             pause.setAttribute("value", "Pause");
             running = true;
         }
