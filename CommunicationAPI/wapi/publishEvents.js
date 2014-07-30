@@ -75,7 +75,7 @@
             type: e.type,
             timeStamp: e.timeStamp,
             touches: cloneTouches(e.touches),
-            taregtTouches: cloneTouches(e.targetTouches),
+            targetTouches: cloneTouches(e.targetTouches),
             changedTouches: cloneTouches(e.changedTouches),
             defaultPrevented: e.defaultPrevented
         };
@@ -430,7 +430,7 @@
      * what events have been subscribed to
      * @return {Array.<string>} Events registered.
      */
-    wapi.publishedEvents = function () {
+    wapi.dbgPublishedEvents = function () {
         var publishedEvents = [];
         for (var key in eventPublish_)
         {

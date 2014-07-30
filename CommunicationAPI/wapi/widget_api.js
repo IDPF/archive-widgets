@@ -370,10 +370,12 @@
 
     var wapi = {
         /* debug */
-        TopicMap_: TopicMap_,
-        verbose: verbose_,
-        childIDs: childIDs_,
-        widgetTree: widgetTree_,
+        dbgANote: "Any property starting with dbg should be removed in a release build",
+        dbgTopicMap_: TopicMap_,
+        dbgVerbose: verbose_,
+        dbgChildIDs: childIDs_,
+        dbgWidgetTree: widgetTree_,
+
         widgetID: widgetID_
 
     };
@@ -386,11 +388,11 @@
      * @param {string} topicName
      * @param {*} data to publish.
      */
-    wapi.publishToParent = function (topicName, data) {
+    function publishToParent_(topicName, data) {
         var message = new TopicMessage_("ready", topicName, true, data);
         message.bubbleonly = true;
         message.widgetPath_.unshift(new Widget(widgetID_, document.URL));
-        wapi.publish_(topicName, message, window);
+        publish_(topicName, message, window);
     };
 
 
@@ -400,7 +402,7 @@
      * @param {TopicMessage_} message to publish.
      * @private
      */
-    wapi.publish_ = function (topicName, message) {
+    function publish_(topicName, message) {
         var topic = TopicMap_[topicName];
 
         if (window.parent === window)
@@ -433,12 +435,12 @@
 
 
     /**
-     * Publish a message topic.
+     * System publish, right now just going up to parents.
      * @param {string} topicName
      * @param {TopicMessage_} message to publish.
      * @private
      */
-    wapi.systemPublish_ = function (topicName, message) {
+    function systemPublish_(topicName, message) {
         var topic = TopicMap_[topicName];
 
         if (message.capture === true)
@@ -457,7 +459,6 @@
                 message.capture = false;
             }
 
-
             /* still in capture phase, send to parent */
             window.parent.postMessage(message, "*");
         }
@@ -468,17 +469,6 @@
 
             topic.callSubscribers(message);
         }
-    };
-
-
-    /**
-     * Send a message topic to a specific iframe.
-     * @param {Window} win -.
-     * @param {string} topicName -.
-     * @param {{*}} data to publish.
-     */
-    wapi.send = function (win, topicName, data) {
-        win.postMessage(new TopicMessage_("publish", topicName, false, data), "*");
     };
 
 
@@ -542,12 +532,12 @@
 
             var topicName = message.payload.topic;
 
-            wapi.publish_(topicName, message, srcWin);
+            publish_(topicName, message, srcWin);
         }
 
 
         /**
-         * Publish the message to parent, child windows, and local handlers.
+         * System publish, right now just going up to parents.
          * @param {Window} srcWin of message.
          * @param {TopicMessage_} message -.
          */
@@ -555,7 +545,7 @@
 
             var topicName = message.payload.topic;
 
-            wapi.systemPublish_(topicName, message, srcWin);
+            systemPublish_(topicName, message, srcWin);
         }
 
 
@@ -578,7 +568,6 @@
                 case "ready":
                     systemPublish(event.source, event.data);
                     break;
-
 
                 default:
                     window.console.error("unknown method");
@@ -638,7 +627,7 @@
      * @param {*} data to publish.
      */
     wapi.publish = function (topicName, data) {
-        wapi.publish_(topicName, new TopicMessage_("publish", topicName, true, data), window);
+        publish_(topicName, new TopicMessage_("publish", topicName, true, data), window);
     };
 
 
@@ -653,10 +642,21 @@
     };
 
     /**
+     * Send a message topic to a specific iframe.
+     * @param {Window} win -.
+     * @param {string} topicName -.
+     * @param {{*}} data to publish.
+     */
+    wapi.send = function (win, topicName, data) {
+        win.postMessage(new TopicMessage_("publish", topicName, false, data), "*");
+    };
+
+
+    /**
      * Returns array of child widget ids.
      * @returns {Array}
      */
-    wapi.childWidgets = function () {
+    wapi.dbgChildWidgets = function () {
         var ids = [];
 
         for (var key in childIDs_)
@@ -770,7 +770,7 @@
         /* this will distribute the ready topic to
          * just my ancestors.
          */
-        wapi.publishToParent("ready", "ready");
+        publishToParent_("ready", "ready");
     }, false);
 
 
@@ -778,13 +778,13 @@
      * TODO: pick the correct inverse.
      */
     window.addEventListener("unload", function (e) {
-        /* this will distribute the ready topic to
+        /* this will distribute the unready topic to
          * just my ancestors.
          */
     }, false);
 
 
-    wapi.debugSubscribedEvents = subscribedEvents_;
+    wapi.dbgSubscribedEvents = subscribedEvents_;
 
     window.wapi = wapi;
 })();
