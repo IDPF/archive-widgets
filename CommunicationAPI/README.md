@@ -16,6 +16,9 @@ in domains preventing XSS.
 
 ### Samples
     to run:
+        If this is the first time running the widgets, install connect, this is
+        a one time process.
+        **npm install connect**
         node server.js - starts up a local http server on 8080
         load localhost:8080/parent.html - to see a set of widgets that are communicating
            with the code in widget_api.js
