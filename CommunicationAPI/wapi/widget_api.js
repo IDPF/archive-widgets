@@ -43,7 +43,7 @@
      * @param {boolean} book - value of assertion.
      * @param {string} msg to show on failed assertion.
      */
-    function debugAssert(bool, msg) {
+	 function dbgAssert(bool, msg) {
         if (!bool)
         {
             alert("AssertionFailure: " + msg);
@@ -114,7 +114,7 @@
     function addWidgetNode(widgetPath) {
         if (widgetTree_ === null)
         {
-            debugAssert(widgetPath[0].widgetid_ === widgetID_);
+            dbgAssert(widgetPath[0].widgetid_ === widgetID_);
             widgetTree_ = widgetPath[0];
         }
 
@@ -290,7 +290,7 @@
         }
         else
         {
-            debugAssert(childIDs_[widgetid] === win);
+            dbgAssert(childIDs_[widgetid] === win);
         }
     };
 
@@ -535,7 +535,7 @@
          */
         function methodPublish(srcWin, message) {
 
-            var topicName = message.payload.topic;
+					var topicName = message.payload.topic;
 
             publish_(topicName, message, srcWin);
         }
@@ -555,7 +555,8 @@
 
 
         if (event.data.type_ === "message")
-        {
+				{
+					window.console.log(event.data.method + ": [" + event.data.payload.topic + "]");
             switch (event.data.method)
             {
                 case "methodSubscribe":
@@ -791,5 +792,7 @@
 
     wapi.dbgSubscribedEvents = subscribedEvents_;
 
+		wapi.dbgAssert = dbgAssert;
+		
     window.wapi = wapi;
 })();

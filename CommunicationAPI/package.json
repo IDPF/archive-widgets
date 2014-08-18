@@ -1,0 +1,25 @@
+{
+  "name": "widgetAPI",
+  "description": "Widget API",
+  "version": "0.0.1",
+  "author": {
+    "name": "will manis",
+    "email": "willmanis@gmail.com"
+  },
+  "keywords": [
+    "widgets",
+    "epub",
+    "events"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/IDPF/widgets"
+  },
+  "dependencies": {
+    "closure-library": "^1.43629075.2",
+    "connect": "2.24.0"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}

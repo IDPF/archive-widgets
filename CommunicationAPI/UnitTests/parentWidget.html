@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Widget</title>
+    <script src="../wapi/widget_api.js"></script>
+    <script src="../wapi/publishEvents.js"></script>
+    <script src="../node_modules/closure-library/closure/goog/base.js"></script>
+</head>
+<body>
+<iframe src="childWidget.html"></iframe>
+<script>
+   var testBroadcast = "broadcast " + document.URL;
+   var testEcho = "echo " + document.URL;
+   
+   wapi.subscribe("start", function(msg) {
+	   wapi.publish("broadcast", testBroadcast);
+	   wapi.publish("echo", testEcho);	   
+   });
+
+   wapi.subscribe("echo", function(msg) {
+	   window.console.log("echo received: " + msg);
+	   var text = document.createTextNode(msg);
+	   var div = document.createElement('div');
+	   div.appendChild(text);
+	   document.body.appendChild(div);
+	assertEquals(msg, testEcho);	   
+   });
+   
+   wapi.subscribe("ack", function(msg) {
+	   window.console.log("ack received: " + msg);
+	   var text = document.createTextNode(msg);
+	   var div = document.createElement('div');
+	   div.appendChild(text);
+	   document.body.appendChild(div);
+	assertEquals(msg, testBroadcast);		
+   });
+</script>
+<script src="parentWidget_test.js"></script>
+</body>
+</html>
