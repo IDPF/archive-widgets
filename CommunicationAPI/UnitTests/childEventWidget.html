@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Child Event Widget</title>
+    <script src="../wapi/widget_api.js"></script>
+    <script src="../wapi/publishEvents.js"></script>
+
+    <script src="../node_modules/closure-library/closure/goog/base.js"></script>
+     <script>
+	goog.require('goog.userAgent');
+     </script>	
+</head>
+<body>
+   <script>
+      wapi.subscribe("broadcast", function(msg) {
+	      wapi.dbgAssert(msg == "broadcast http://localhost:8080/UnitTests/parentEventWidget.html");	   
+	      wapi.publish("ack", msg);
+	      var text = document.createTextNode(msg);
+	      var div = document.createElement('div');
+	      div.appendChild(text);
+	      document.body.appendChild(div);
+      });
+
+      wapi.subscribe("echo", function(msg) {
+	      wapi.dbgAssert(msg == "echo http://localhost:8080/UnitTests/parentEventWidget.html");
+	      wapi.publish("echo", msg);
+	      var text = document.createTextNode(msg);
+	      var div = document.createElement('div');
+	      div.appendChild(text);
+	      document.body.appendChild(div);
+      });
+      
+      wapi.publish("start", "start");
+
+
+    var clickSubscribed = false;
+    
+    wapi.subscribe("sysEventSubscribe", function (msg) {
+	    if (!clickSubscribed)
+		    {
+			    window.generateWidgetEvents(100);
+			    clickSubscribed = true;
+		    }
+    });	
+   </script>
+   <script src="childEventGenerator.js"></script>
+</body>
+</html>

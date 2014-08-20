@@ -13,6 +13,11 @@
 // limitations under the License.
 
 var _allTests = [
+    "UnitTests/parentEventWidget_test.html",
+    "UnitTests/parentWidget_test.html"
+    ];
+
+var googTests = [
 "node_modules/closure-library/closure/goog/a11y/aria/announcer_test.html",
 "node_modules/closure-library/closure/goog/a11y/aria/aria_test.html",
 "node_modules/closure-library/closure/goog/array/array_test.html",
@@ -543,4 +548,4 @@ var _allTests = [
 "node_modules/closure-library/third_party/closure/goog/loremipsum/text/loremipsum_test.html",
 "node_modules/closure-library/third_party/closure/goog/mochikit/async/deferredlist_test.html",
 "node_modules/closure-library/third_party/closure/goog/mochikit/async/deferred_test.html"
-	 ];
+];

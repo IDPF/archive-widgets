@@ -40,10 +40,10 @@ function runTest(string, ticks, number) {
   goog.events.listen(t, 'tick', function(evt) {
     count++;
   });
-  t.start();
+	t.start();
+	
 	mockClock.tick(maxDuration);
 	
-
   t.stop();
   goog.events.removeAll(t);
 }

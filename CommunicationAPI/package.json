@@ -16,8 +16,18 @@
     "url": "git://github.com/IDPF/widgets"
   },
   "dependencies": {
-    "closure-library": "^1.43629075.2",
-    "connect": "2.24.0"
+    "connect": "2.24.0",
+
+    /* this is to allow the installation of closure 
+     * which does not contain a package.json 
+     */
+    "napa": "^0.4.1" 
+  },
+  "scripts": {
+    "install": "napa"
+  },
+  "napa": {
+    "closure-library": "git://github.com/google/closure-library"
   },
   "engines": {
     "node": ">=0.8.0"

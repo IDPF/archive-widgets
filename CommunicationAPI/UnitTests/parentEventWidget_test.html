@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent Event Widget</title>
+    <script src="../wapi/widget_api.js"></script>
+    <script src="../wapi/publishEvents.js"></script>
+    <script src="../node_modules/closure-library/closure/goog/base.js"></script>
+   <script>
+      goog.require('goog.Promise');
+      goog.require('goog.Thenable');
+      goog.require('goog.functions');
+      goog.require('goog.testing.AsyncTestCase');
+      goog.require('goog.testing.MockClock');
+      goog.require('goog.testing.PropertyReplacer');
+      goog.require('goog.testing.jsunit');
+      goog.require('goog.testing.recordFunction');
+   </script>
+</head>
+<body>
+<iframe src="childEventWidget.html"></iframe>
+<script>
+      var widgetEventTestComplete = false;
+</script>
+<script src="parentEventWidget_test.js"></script>
+<script>
+   var testBroadcast = "broadcast " + document.URL;
+   var testEcho = "echo " + document.URL;
+   var counter = 0;
+
+
+	
+   
+   wapi.subscribe("start", function(msg) {
+	   wapi.publish("sysEventSubscribe", 'click');	   
+	   wapi.publish("broadcast", testBroadcast);
+	   wapi.publish("echo", testEcho);
+//	   assertEquals(50, 100);	   	   
+	   assertEquals(0, counter);	   
+   });
+
+   wapi.subscribe("end", function(msg) {
+	   assertEquals(100, counter);
+	   widgetEventTestComplete = true;	   
+   });
+
+   wapi.subscribe('click', function() {
+	   window.console.log('click: ' + counter++);
+	   window.continueTesting();
+   });
+   
+   wapi.subscribe("echo", function(msg) {
+	   window.console.log("echo received: " + msg);
+	   var text = document.createTextNode(msg);
+	   var div = document.createElement('div');
+	   div.appendChild(text);
+	   document.body.appendChild(div);
+	assertEquals(msg, testEcho);	   
+   });
+   
+   wapi.subscribe("ack", function(msg) {
+	   window.console.log("ack received: " + msg);
+	   var text = document.createTextNode(msg);
+	   var div = document.createElement('div');
+	   div.appendChild(text);
+	   document.body.appendChild(div);
+	assertEquals(msg, testBroadcast);		
+   });
+</script>
+
+<script>
+
+
+</script>
+</body>
+</html>
