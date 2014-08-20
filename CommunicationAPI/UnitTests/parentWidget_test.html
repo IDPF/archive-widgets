@@ -9,31 +9,37 @@
 <body>
 <iframe src="childWidget.html"></iframe>
 <script>
-   var testBroadcast = "broadcast " + document.URL;
-   var testEcho = "echo " + document.URL;
-   
-   wapi.subscribe("start", function(msg) {
-	   wapi.publish("broadcast", testBroadcast);
-	   wapi.publish("echo", testEcho);	   
-   });
+    /* this specifies what is the root of the widget hierarchy,
+     * since this will run (sometimes) in the all_tests.html
+     * we need to indicate that this is the top of the widget hierarchy
+     */
+    window.widgetRoot = true;
 
-   wapi.subscribe("echo", function(msg) {
-	   window.console.log("echo received: " + msg);
-	   var text = document.createTextNode(msg);
-	   var div = document.createElement('div');
-	   div.appendChild(text);
-	   document.body.appendChild(div);
-	assertEquals(msg, testEcho);	   
-   });
-   
-   wapi.subscribe("ack", function(msg) {
-	   window.console.log("ack received: " + msg);
-	   var text = document.createTextNode(msg);
-	   var div = document.createElement('div');
-	   div.appendChild(text);
-	   document.body.appendChild(div);
-	assertEquals(msg, testBroadcast);		
-   });
+    var testBroadcast = "broadcast " + document.URL;
+    var testEcho = "echo " + document.URL;
+
+    wapi.subscribe("start", function (msg) {
+        wapi.publish("broadcast", testBroadcast);
+        wapi.publish("echo", testEcho);
+    });
+
+    wapi.subscribe("echo", function (msg) {
+        window.console.log("echo received: " + msg);
+        var text = document.createTextNode(msg);
+        var div = document.createElement('div');
+        div.appendChild(text);
+        document.body.appendChild(div);
+        assertEquals(msg, testEcho);
+    });
+
+    wapi.subscribe("ack", function (msg) {
+        window.console.log("ack received: " + msg);
+        var text = document.createTextNode(msg);
+        var div = document.createElement('div');
+        div.appendChild(text);
+        document.body.appendChild(div);
+        assertEquals(msg, testBroadcast);
+    });
 </script>
 <script src="parentWidget_test.js"></script>
 </body>

@@ -97,8 +97,8 @@
 
 
     function subscribe_(eventType) {
-			wapi.publish("sysEventSubscribe", eventType);
-			wapi.subscribe(eventType, eventMonitor.eventCounters[eventType].handler);
+        wapi.publish("sysEventSubscribe", eventType);
+        wapi.subscribe(eventType, eventMonitor.eventCounters[eventType].handler);
     }
 
     function unsubscribe_(eventType) {

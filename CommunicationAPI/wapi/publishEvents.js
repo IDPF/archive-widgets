@@ -1,5 +1,7 @@
 (function () {
 
+    window.console.log(document.URL + " - " + "publishEvents.js");
+
     if (!wapi)
     {
         alert("no widget support, include widget_api.js");

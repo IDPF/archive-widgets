@@ -26,64 +26,64 @@ var mockClock;
 var maxDuration = 60 * 1000; // 60s
 
 function setUp() {
-  mockClock = new goog.testing.MockClock(true /* install */);
+    mockClock = new goog.testing.MockClock(true /* install */);
 }
 
 function tearDown() {
-  mockClock.dispose();
+    mockClock.dispose();
 }
 
 // Run a test for 60s and see how many counts we get
 function runTest(string, ticks, number) {
-  var t = new goog.Timer(ticks);
-  var count = 0;
-  goog.events.listen(t, 'tick', function(evt) {
-    count++;
-  });
-	t.start();
-	
-	mockClock.tick(maxDuration);
-	
-  t.stop();
-  goog.events.removeAll(t);
+    var t = new goog.Timer(ticks);
+    var count = 0;
+    goog.events.listen(t, 'tick', function (evt) {
+        count++;
+    });
+    t.start();
+
+    mockClock.tick(maxDuration);
+
+    t.stop();
+    goog.events.removeAll(t);
 }
 
 
 function test100msTicks() {
-  // Desc, interval in ms, expected ticks in 60s
-  runTest('10 ticks per second for 6 seconds', 100, 60);
+    // Desc, interval in ms, expected ticks in 60s
+    runTest('10 ticks per second for 6 seconds', 100, 60);
 }
 
 /***********
-function test500msTicks() {
+ function test500msTicks() {
   runTest('2 ticks per second for 60 seconds', 500, 120);
 }
 
-function test1sTicks() {
+ function test1sTicks() {
   runTest('1 tick per second for 60 seconds', 1000, 60);
 }
 
-function test2sTicks() {
+ function test2sTicks() {
   runTest('1 tick every 2 seconds for 60 seconds', 2000, 30);
 }
 
-function test5sTicks() {
+ function test5sTicks() {
   runTest('1 tick every 5 seconds for 60 seconds', 5000, 12);
 }
 
-function test10sTicks() {
+ function test10sTicks() {
   runTest('1 tick every 10 seconds for 60 seconds', 10000, 6);
 }
 
-function test30sTicks() {
+ function test30sTicks() {
   runTest('1 tick every 30 seconds for 60 seconds', 30000, 2);
 }
 
-function test60sTicks() {
+ function test60sTicks() {
   runTest('1 tick every 60 seconds', 60000, 1);
 }
 
-function testCallOnce() {
+ function testCallOnce() {
   var c = 0;
   var actualTimeoutId = goog.Timer.callOnce(
       function() {
@@ -106,11 +106,11 @@ function testCallOnce() {
   mockClock.tick(maxDuration);
 }
 
-function testCallOnceIgnoresTimeoutsTooLarge() {
+ function testCallOnceIgnoresTimeoutsTooLarge() {
   var failCallback = goog.partial(fail, 'Timeout should never be called');
   assertEquals('Timeouts slightly too large should yield a timer ID of -1',
       -1, goog.Timer.callOnce(failCallback, 2147483648));
   assertEquals('Infinite timeouts should yield a timer ID of -1',
       -1, goog.Timer.callOnce(failCallback, Infinity));
 }
-************/
+ ************/

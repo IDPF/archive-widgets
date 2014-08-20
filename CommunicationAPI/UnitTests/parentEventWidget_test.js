@@ -18,7 +18,6 @@ goog.require('goog.Promise');
 goog.require('goog.Thenable');
 goog.require('goog.functions');
 goog.require('goog.testing.AsyncTestCase');
-goog.require('goog.testing.MockClock');
 goog.require('goog.testing.PropertyReplacer');
 goog.require('goog.testing.jsunit');
 goog.require('goog.testing.recordFunction');
@@ -26,86 +25,29 @@ goog.require('goog.testing.recordFunction');
 goog.setTestOnly('goog.PromiseTest');
 
 
-// TODO(brenneman):
-// - Add tests for interoperability with native Promises where available.
-// - Make most tests use the MockClock (though some tests should still verify
-//   real asynchronous behavior.
-// - Add tests for long stack traces.
-
-
-var mockClock;
 var asyncTestCase = goog.testing.AsyncTestCase.createAndInstall(document.title);
-var stubs = new goog.testing.PropertyReplacer();
 var unhandledRejections;
 
 
-// Simple shared objects used as test values.
-var dummy = {toString: goog.functions.constant('[object dummy]')};
-var sentinel = {toString: goog.functions.constant('[object sentinel]')};
-
-
 function setUpPage() {
-  asyncTestCase.stepTimeout = 5000;
-//  mockClock = new goog.testing.MockClock();
+    asyncTestCase.stepTimeout = 2000;
 }
 
 
 function setUp() {
-  unhandledRejections = goog.testing.recordFunction();
-  goog.Promise.setUnhandledRejectionHandler(unhandledRejections);
+    unhandledRejections = goog.testing.recordFunction();
+    goog.Promise.setUnhandledRejectionHandler(unhandledRejections);
 }
 
 
 function tearDown() {
-  if (mockClock) {
-    // The system should leave no pending unhandled rejections. Advance the mock
-    // clock to the end of time to catch any rethrows waiting in the queue.
-    mockClock.tick(Infinity);
-    mockClock.uninstall();
-    mockClock.reset();
-  }
-  stubs.reset();
 }
 
 
 function tearDownPage() {
-  goog.dispose(mockClock);
 }
-
-
-function continueTesting() {
-	window.console.log("continueTesting");
-	if (window.widgetEventTestComplete === true)
-	{
-		asyncTestCase.continueTesting();
-	}
-}
-
-
-
-
-
 
 function testIsComplete() {
-  asyncTestCase.waitForAsync();
-  var timesCalled = 0;
-
-	var p = new goog.Promise(function(resolve, reject) {
-		window.console.log("anonymouse resolve, reject");
-
-		resolve(widgetEventTestComplete);
-
-	});
-	
-	p.then(function(value) {
-		window.console.log("p.then");		
-    timesCalled++;
-    assertEquals('onFulfilled must be called exactly once.', 1, timesCalled);
-	});
-	
-  p.thenAlways(continueTesting);
-
-  assertEquals('then() must return before callbacks are invoked.',
-               0, timesCalled);
+    asyncTestCase.waitForAsync();
 }
 

@@ -36,6 +36,10 @@
 
 (function () {
 
+    var DEBUG = true;
+
+    window.console.log(document.URL + " - " + "widget_api.js");
+
     /* debugging stuff */
 
     /**
@@ -43,10 +47,18 @@
      * @param {boolean} book - value of assertion.
      * @param {string} msg to show on failed assertion.
      */
-	 function dbgAssert(bool, msg) {
+    function assert_(bool, msg) {
         if (!bool)
         {
-            alert("AssertionFailure: " + msg);
+            if (DEBUG)
+            {
+                window.console.warn("AssertionFailure: " + msg);
+                debugger;
+            }
+            else
+            {
+                alert("AssertionFailure: " + msg);
+            }
         }
     }
 
@@ -114,7 +126,7 @@
     function addWidgetNode(widgetPath) {
         if (widgetTree_ === null)
         {
-            dbgAssert(widgetPath[0].widgetid_ === widgetID_);
+            assert_(widgetPath[0].widgetid_ === widgetID_);
             widgetTree_ = widgetPath[0];
         }
 
@@ -290,7 +302,7 @@
         }
         else
         {
-            dbgAssert(childIDs_[widgetid] === win);
+            assert_(childIDs_[widgetid] === win);
         }
     };
 
@@ -410,7 +422,7 @@
     function publish_(topicName, message) {
         var topic = TopicMap_[topicName];
 
-        if (window.parent === window)
+        if (window.widgetRoot || window.parent === window)
         {
             /* we have reached the parent,
              * this will need to be tweaked to account for RS
@@ -535,7 +547,7 @@
          */
         function methodPublish(srcWin, message) {
 
-					var topicName = message.payload.topic;
+            var topicName = message.payload.topic;
 
             publish_(topicName, message, srcWin);
         }
@@ -555,8 +567,8 @@
 
 
         if (event.data.type_ === "message")
-				{
-					window.console.log(event.data.method + ": [" + event.data.payload.topic + "]");
+        {
+            window.console.log(document.URL + " - " + event.data.method + ": [" + event.data.payload.topic + "]");
             switch (event.data.method)
             {
                 case "methodSubscribe":
@@ -790,9 +802,13 @@
     }, false);
 
 
-    wapi.dbgSubscribedEvents = subscribedEvents_;
+    if (DEBUG)
+    {
+        wapi.dbgSubscribedEvents = subscribedEvents_;
+        wapi.TopicMap_ = TopicMap_;
+        wapi.dbgAssert = assert_;
+    }
 
-		wapi.dbgAssert = dbgAssert;
-		
+
     window.wapi = wapi;
 })();
