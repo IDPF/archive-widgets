@@ -17,10 +17,6 @@
     },
     "dependencies": {
         "connect": "2.24.0",
-
-        /* this is to allow the installation of closure
-         * which does not contain a package.json
-         */
         "napa": "^0.4.1"
     },
     "scripts": {
