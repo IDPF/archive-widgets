@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Child Widget</title>
+    <script src="../../wapi/widget_api.js"></script>
+</head>
+<body>
+<script>
+    wapi.subscribe("broadcast0", function (msg) {
+        wapi.publish("ack0", document.URL);
+    });
+
+    wapi.subscribe("broadcast1", function (msg) {
+        wapi.publish("ack1", document.URL);
+    });
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Handler Test</title>
+    <!--
+    This tests that a component can register N handlers for a message,
+    this probably is not a common pattern, however it is trivial to
+    support and in some cases components may find it very useful.
+
+    The child widget registers three handlers for the broadcast
+    message. The parent expects three acks, one from each handler.
+    -->
+    <script src="../../wapi/widget_api.js"></script>
+    <script src="../../node_modules/closure-library/closure/goog/base.js"></script>
+    <script>
+        goog.require('goog.Promise');
+        goog.require('goog.Thenable');
+        goog.require('goog.functions');
+        goog.require('goog.testing.AsyncTestCase');
+        goog.require('goog.testing.PropertyReplacer');
+        goog.require('goog.testing.jsunit');
+        goog.require('goog.testing.recordFunction');
+    </script>
+
+</head>
+<body>
+<iframe src="widget.html"></iframe>
+<script>
+    /* this specifies what is the root of the widget hierarchy,
+     * since this will run (sometimes) in the all_tests.html
+     * we need to indicate that this is the top of the widget hierarchy
+     */
+    window.widgetRoot = true;
+    var counter = 0;
+
+    var childLoaded = false;
+    var testBroadcast = "broadcast " + document.URL;
+    var testEnd = "end " + document.URL;
+
+    wapi.subscribe("sysReady", function (msg) {
+        childLoaded = true;
+    });
+
+    function startTest() {
+        var intervalId = window.setInterval(function () {
+            if (childLoaded)
+            {
+                wapi.publish("broadcast", testBroadcast);
+                window.clearInterval(intervalId);
+            }
+        }, 200);
+    }
+
+    wapi.subscribe("ack", function (msg) {
+        assertEquals(testBroadcast, msg);
+        counter++;
+    });
+
+    wapi.subscribe("end", function (msg) {
+        assertEquals(3, counter);
+        completedTest();
+    });
+
+
+</script>
+<script src="../harness/asyncTestHarness.js"></script>
+</body>
+</html>

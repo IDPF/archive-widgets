@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Handler Widget</title>
+    <script src="../../wapi/widget_api.js"></script>
+    <!-- script src="../../wapi/publishEvents2.js"></script -->
+</head>
+<body>
+<script>
+    var counter = 0;
+
+    wapi.subscribe("broadcast", function (msg) {
+        wapi.publish("ack", msg);
+        if (++counter === 3)
+        {
+            wapi.publish("end", msg);
+        }
+    });
+
+    wapi.subscribe("broadcast", function (msg) {
+        wapi.publish("ack", msg);
+        if (++counter === 3)
+        {
+            wapi.publish("end", msg);
+        }
+
+    });
+
+    wapi.subscribe("broadcast", function (msg) {
+        wapi.publish("ack", msg);
+        if (++counter === 3)
+        {
+            wapi.publish("end", msg);
+        }
+    });
+</script>
+
+
+</body>
+</html>

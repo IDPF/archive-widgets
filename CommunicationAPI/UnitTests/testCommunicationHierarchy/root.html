@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Communication Hierarchy</title>
+    <script src="../../wapi/widget_api.js"></script>
+    <script src="../../node_modules/closure-library/closure/goog/base.js"></script>
+    <script>
+        goog.require('goog.Promise');
+        goog.require('goog.Thenable');
+        goog.require('goog.functions');
+        goog.require('goog.testing.AsyncTestCase');
+        goog.require('goog.testing.PropertyReplacer');
+        goog.require('goog.testing.jsunit');
+        goog.require('goog.testing.recordFunction');
+    </script>
+</head>
+<body>
+<iframe src="widget1.html"></iframe>
+<iframe src="widget2.html"></iframe>
+<script>
+    /* this specifies what is the root of the widget hierarchy,
+     * since this will run (sometimes) in the all_tests.html
+     * we need to indicate that this is the top of the widget hierarchy
+     */
+    window.widgetRoot = true;
+
+    var testBroadcast0 = "broadcast0 " + document.URL;
+    var testBroadcast1 = "broadcast1 " + document.URL;
+    var ack0Received = 0;
+    var ack1Received = 0;
+    var confirmMessage = false;
+
+
+    wapi.subscribe("sysReady", function (msg) {
+        childLoaded = true;
+    });
+
+    function startTest() {
+        var intervalId = window.setInterval(function () {
+            if (childLoaded)
+            {
+                wapi.publish("broadcast0", testBroadcast0);
+                wapi.publish("broadcast1", testBroadcast1);
+                window.clearInterval(intervalId);
+            }
+        }, 200);
+    }
+
+    wapi.subscribe("ack0", function (msg) {
+        window.console.log("ack0 received: " + msg);
+        ack0Received++;
+    });
+
+    wapi.subscribe("ack1", function (msg) {
+        window.console.log("ack1 received: " + msg);
+        ack1Received++;
+    });
+
+    wapi.subscribe("confirmMessageFromWidget1.1", function (msg) {
+        confirmMessage = true;
+    });
+
+    window.setTimeout(function () {
+        assertEquals(6, ack0Received);
+        assertEquals(6, ack1Received);
+        assertTrue(confirmMessage);
+        completedTest();
+    }, 2000);
+
+</script>
+<script src="../harness/asyncTestHarness.js"></script>
+</body>
+</html>

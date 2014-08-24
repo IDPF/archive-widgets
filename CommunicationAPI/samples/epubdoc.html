@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+    <!-- widget communication code -->
+    <script src="../wapi/widget_api.js"></script>
+
+
+    <link href="css/status.css" type="text/css" rel="stylesheet">
+    <style>
+        #childIframeA {
+            position: absolute;
+            top: 100px;
+            left: 20px;
+            width: 320px;
+            height: 400px;
+        }
+
+        #rsinfo {
+            position: absolute;
+            top: 510px;
+            left: 20px;
+            width: 320px;
+            height: 50px;
+            border: 2px solid red;
+        }
+
+        .method, .events, .pubsub {
+            border: 2px solid black;
+            margin: 5px;
+        }
+
+        .eventlabel {
+            font-size: 18px;
+            font-family: Consolas, sans-serif;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="focus_status">blurred</div>
+<!--iframe epub:type="widget"class="widget" id="childIframeA" src="http://acmewidget.cr:8080/childEventA.html"></iframe-->
+<iframe epub:type="widget" class="widget" id="childIframeA"
+        src="widgets/childEventA.html"></iframe>
+
+<div id="rsinfo"><span>RS directives: </span><span id="directives"></span></div>
+<script>
+    wapi.subscribe("rsdirective", function (msg) {
+        var e = document.getElementById("directives");
+        e.innerHTML = msg;
+    });
+
+    //    window.addEventListener("touchmove", function (e) {
+    //        e.preventDefault();
+    //    }, false);
+
+</script>
+<script src="supportJS/timer.js"></script>
+<script src="supportJS/pause.js"></script>
+<script src="supportJS/focus.js"></script>
+<!-- script src="../wapi/publishEvents2.js"></script -->
+</body>
+</html>

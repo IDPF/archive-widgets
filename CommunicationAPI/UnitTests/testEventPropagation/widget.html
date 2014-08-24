@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Widget</title>
+    <script>
+        window.console.log("**** Child Event Widget **** ");
+    </script>
+
+    <script src="../../wapi/widget_api.js"></script>
+
+    <script src="../../node_modules/closure-library/closure/goog/base.js"></script>
+    <script>
+        goog.require('goog.userAgent');
+    </script>
+</head>
+<body>
+<script>
+    var clickSubscribed = false;
+
+    wapi.subscribe("sysEventSubscribe", function (msg) {
+        if (goog.isArray(msg))
+        {
+            window.console.log("****** wapi.subscribe: sysEventSubscribe - " + msg.join(", "));
+        }
+        else if (goog.isString(msg))
+        {
+            window.console.log("****** wapi.subscribe: sysEventSubscribe - " + msg);
+        }
+        if (!clickSubscribed && (msg === "click" || msg === "touchstart" || msg === "pointermove"))
+        {
+            window.generateWidgetEvents(100);
+            clickSubscribed = true;
+        }
+    });
+</script>
+<script src="childEventGenerator.js"></script>
+</body>
+</html>

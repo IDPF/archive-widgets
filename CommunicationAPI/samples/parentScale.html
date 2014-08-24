@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Parent2</title>
+    <script src="../wapi/widget_api.js"></script>
+
+    <!-- page implementation code -->
+
+    <link href="css/status.css" type="text/css" rel="stylesheet">
+    <style>
+        #canvas {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 800px;
+            height: 800px;
+            overflow: hidden;
+        }
+
+        #compositionIframe2 {
+            margin: 20px;
+
+            left: 20px;
+            width: 670px;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        #controls {
+            position: absolute;
+            top: 850px;
+            left: 5px;
+
+            margin: 20px;
+            width: 670px;
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+        }
+
+        .method {
+            border: 2px solid black;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+
+<div id="canvas">
+    <iframe epub:type="widget" class="widget" id="compositionIframe2" src="staging/scale.html"></iframe>
+</div>
+
+<div id="controls" style="padding:10px;">
+    <div class="method">
+        <label>Propagate events:</label>
+        <input id="propogate" type="button" name="Pause" value="Propagate">
+    </div>
+</div>
+<script>
+    window.addEventListener("touchstart", function (e) {
+        e.preventDefault();
+    });
+
+    window.addEventListener("touchmove", function (e) {
+        e.preventDefault();
+    });
+
+    window.addEventListener("touchend", function (e) {
+        e.preventDefault();
+    });
+
+
+    var eventMonitors = {
+        "touchstart": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchstart"].count += 1;
+                eventCounters_["touchstart"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchstart", msg));
+                }
+
+            }
+        },
+        "touchend": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchend"].count += 1;
+                eventCounters_["touchend"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchend", msg));
+                }
+
+            }
+        },
+        "touchmove": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchmove"].count += 1;
+                eventCounters_["touchmove"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchmove", msg));
+                }
+
+            }
+        },
+        "touchenter": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchenter"].count += 1;
+                eventCounters_["touchenter"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchenter", msg));
+                }
+            }
+        },
+        "touchleave": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchleave"].count += 1;
+                eventCounters_["touchleave"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchleave", msg));
+                }
+
+            }
+        },
+        "touchcancel": {
+            count: 0,
+            updated: true,
+            handler: function (msg) {
+                if (print_eventinfo)
+                {
+                    printEventInfo(msg);
+                }
+                eventCounters_["touchcancel"].count += 1;
+                eventCounters_["touchcancel"].updated = false;
+                if (dispatch && !msg.defaultPrevented)
+                {
+                    window.dispatchEvent(new CustomEvent("touchcancel", msg));
+                }
+            }
+        }
+    };
+
+    var propogate = document.getElementById("propogate");
+    propogate.addEventListener("click", function (e) {
+        var touchSubscribe = ["touchstart", "touchend", "touchmove", "touchenter", "touchleave", "touchcancel"];
+        wapi.publish("sysEventSubscribe", touchSubscribe);
+        for (var i = 0; i < touchSubscribe.length; i++)
+        {
+            wapi.subscribe(touchSubscribe[i], eventMonitors[touchSubscribe[i]].handler);
+        }
+
+    });
+
+</script>
+</body>
+</html>

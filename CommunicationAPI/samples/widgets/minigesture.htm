@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Widget</title>
+    <script src="../../wapi/widget_api.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/status.css">
+    <style>
+        #timer {
+            text-align: center;
+            font-size: 36px;
+            margin: 20px;
+            border: 1px solid blue;
+        }
+
+        #eventdiv {
+            border: 2px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="timer"></div>
+
+<div id="eventdiv">
+    <label>Topic: event</label>
+    <input class="publish" id="event" type="button" name="Event" value="Click Event">
+</div>
+<script src="../supportJS/timer.js"></script>
+<script src="../supportJS/pause.js"></script>
+<script>
+    var eventCounter = 0;
+    var eventButton = document.getElementById("event");
+
+    eventButton.addEventListener("click", function (e) {
+        var doc = document.URL.slice(document.URL.lastIndexOf("/") + 1);
+        var id = wapi.widgetID.slice(wapi.widgetID.lastIndexOf("-") + 1);
+        wapi.publish("event", "click:" + eventCounter++ + " - " + doc + " - " + id);
+    }, true);
+
+
+    wapi.subscribe("news", function (msg) {
+        var news = document.getElementById("status");
+        news.innerHTML = "Topic: [news] " + msg;
+    });
+</script>
+</body>
+</html>

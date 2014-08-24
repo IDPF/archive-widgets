@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Communication Widget</title>
+    <script src="../../wapi/widget_api.js"></script>
+</head>
+<body>
+<script>
+    wapi.subscribe("broadcast", function (msg) {
+        wapi.publish("ack", msg);
+    });
+
+    wapi.subscribe("echo", function (msg) {
+        wapi.publish("echo", msg);
+    });
+</script>
+
+
+</body>
+</html>

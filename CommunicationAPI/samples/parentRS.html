@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+    <!-- widget communication code -->
+    <script src="../wapi/widget_api.js"></script>
+
+
+    <link href="css/status.css" type="text/css" rel="stylesheet">
+
+
+    <style>
+        .rs {
+            position: absolute;
+            top: 100px;
+            width: 360px;
+            height: 590px;
+        }
+
+        #epubdoc {
+            left: 10px;
+        }
+
+        #epubdoc2 {
+            left: 640px;
+        }
+
+        .inlineDiv {
+            display: inline-block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 695px;
+            left: 10px;
+            width: 1000px;
+        / / border : 2 px solid red;
+            font-size: 16px;
+            font-family: Consolas, sans-serif;
+        }
+
+        .method, .events, .pubsub {
+            border: 2px solid red;
+        / / margin : 5 px;
+        }
+
+        #mousetracker {
+            position: absolute;
+            top: 10px;
+            left: 385px;
+            width: 250px;
+            height: 80px;
+            font-size: 12px;
+            font-family: Consolas, sans-serif;
+            border: 1px solid red;
+        }
+
+        #counters {
+            position: absolute;
+            top: 355px;
+            left: 385px;
+            width: 250px;
+            height: 340px;
+            font-size: 14px;
+            font-family: Consolas, sans-serif;
+            border: 1px solid red;
+            overflow: scroll;
+
+        }
+
+        #eventstuff {
+            position: absolute;
+            top: 100px;
+            left: 385px;
+            width: 230px;
+            height: 225px;
+            font-size: 14px;
+            font-family: Consolas, sans-serif;
+            border: 1px solid red;
+            padding: 10px;
+        }
+
+        .counter {
+            margin-left: 20px;
+        }
+
+        .eventlabel {
+            font-size: 18px;
+            font-family: Consolas, sans-serif;
+            margin: 10px;
+        }
+
+        #loader {
+            position: absolute;
+            top: 10px;
+            left: 640px;
+            width: 360px;
+            height: 80px;
+            margin: 0px;
+        }
+
+        input[type="checkbox"] {
+            margin: 0px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="focus_status">blurred</div>
+
+<div id="mousetracker">
+    <div class="dispatch" style="padding:10px;">
+        <label>
+            Dispatch "move" events received from widget:
+        </label>
+        <input id="dispatchid" type="checkbox" name="dispatcher" checked>
+    </div>
+    <div id="mousetrackerdata" style="padding-left:10px"></div>
+</div>
+
+<iframe id="epubdoc" class="rs" src="epubdoc.html"></iframe>
+<!--iframe id="epubdoc" src="http://publisher.cr:8080/epubdoc.html"></iframe-->
+<iframe id="epubdoc2" class="rs" src=""></iframe>
+
+
+<div id="controls">
+    <div class="method inlineDiv" style="margin:10px;">
+        <label>
+            Topic: pause (all)
+        </label>
+        <input id="pause" type="button" name="Pause" value="Pause">
+    </div>
+    <div class="events inlineDiv" style="margin:10px;">
+        <label>
+            Publish topic:
+        </label>
+        <input id="topic" type="text" name="Topic" value="broadcast" style="width:100px">
+        <input id="data" type="text" name="Data" value="mousemove">
+        <input id="topicTester" type="button" name="Events" value="Publish">
+    </div>
+</div>
+
+<div class="events" id="loader">
+    <label>
+        Load new iframe:
+    </label>
+    <input id="newiframe" type="button" name="Topic" value="Load" style="width:100px">
+</div>
+
+<div id="counters">
+<div class="eventlabel" id="eventlabel">
+    Event received:
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_allmouse"><span>ALL MOUSE: </span>
+    <span id="allmouse"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_click">
+    <span> click: </span>
+    <span id="click"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_dblclick">
+    <span>dblclick: </span>
+    <span id="dblclick"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_mousedown">
+    <span> mousedown: </span>
+    <span id="mousedown"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_mouseup">
+    <span>mouseup: </span>
+    <span id="mouseup"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_mouseover">
+    <span>mouseover: </span>
+    <span id="mouseover"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_mousemove">
+    <span>mousemove: </span>
+    <span id="mousemove"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_mouseout">
+    <span>mouseout: </span>
+    <span id="mouseout"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_allkey"><span>ALL KEY: </span>
+    <span id="allkey"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_keydown">
+    <span>keydown: </span>
+    <span id="keydown"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_keypress">
+    <span>keypress: </span>
+    <span id="keypress"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_keyup">
+    <span>keyup: </span>
+    <span id="keyup"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_resize">
+    <span>resize: </span>
+    <span id="resize"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_scroll">
+    <span>scroll: </span>
+    <span id="scroll"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_focus">
+    <span>focus: </span>
+    <span id="focus"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_blur">
+    <span>blur: </span>
+    <span id="blur"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_focusin">
+    <span>focusin: </span>
+    <span id="focusin"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_focusout">
+    <span>focusout: </span>
+    <span id="focusout"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_DOMActivate">
+    <span>DOMActivate: </span>
+    <span id="DOMActivate"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_alltouch"><span>ALL TOUCH: </span>
+    <span id="alltouch"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchstart">
+    <span>touchstart: </span>
+    <span id="touchstart"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchend">
+    <span>touchend: </span>
+    <span id="touchend"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchmove">
+    <span>touchmove: </span>
+    <span id="touchmove"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchenter">
+    <span>touchenter: </span>
+    <span id="touchenter"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchleave">
+    <span>touchleave: </span>
+    <span id="touchleave"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_touchcancel">
+    <span>touchcancel: </span>
+    <span id="touchcancel"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_allpointer"><span>ALL POINTER: </span>
+    <span id="allpointer"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerdown">
+    <span>pointerdown: </span>
+    <span id="pointerdown"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerup">
+    <span>pointerup: </span>
+    <span id="pointerup"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointercancel">
+    <span>pointercancel: </span>
+    <span id="pointercancel"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointermove">
+    <span>pointermove: </span>
+    <span id="pointermove"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerover">
+    <span>pointerover: </span>
+    <span id="pointerover"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerout">
+    <span>pointerout: </span>
+    <span id="pointerout"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerenter">
+    <span>pointerenter: </span>
+    <span id="pointerenter"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_pointerleave">
+    <span>pointerleave: </span>
+    <span id="pointerleave"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_gotpointercapture">
+    <span>gotpointercapture: </span>
+    <span id="gotpointercapture"> 0</span>
+</div>
+
+<div class="counter">
+    <input type="checkbox" id="sub_lostpointercapture">
+    <span>lostpointercapture:</span>
+    <span id="lostpointercapture">0 </span>
+</div>
+</div>
+
+<div id="eventstuff">
+    <div><label>Display subscribed: </label><input type="checkbox" id="print_eventinfo" checked></div>
+    <div id="eventinfo"></div>
+</div>
+
+<script>
+    /* code for controls */
+    var pause = document.getElementById("pause");
+    var running = true;
+
+    pause.addEventListener("click", function (e) {
+        if (running === true)
+        {
+            wapi.publish("sysPause", "pause");
+            running = false;
+            pause.setAttribute("value", "Resume");
+        }
+        else
+        {
+            wapi.publish("sysPause", "resume");
+            pause.setAttribute("value", "Pause");
+            running = true;
+        }
+    }, false);
+
+    var pagenum = 0;
+    window.addEventListener("keyup", function (e) {
+        if (!e.defaultPrevented)
+        {
+            if (e.keyIdentifier == "Left")
+            {
+                pagenum -= 1;
+                wapi.publish("rsdirective", "prev page: " + pagenum);
+                e.preventDefault();
+
+            }
+            else if (e.keyIdentifier == "Right")
+            {
+                pagenum += 1;
+                wapi.publish("rsdirective", "next page: " + pagenum);
+                e.preventDefault();
+            }
+        }
+    }, false);
+
+    var iframeButton = document.getElementById("newiframe");
+    iframeButton.addEventListener("click", function (e) {
+        var newiframe = document.getElementById("epubdoc2");
+        newiframe.src = "epubdoc.html";
+    });
+
+</script>
+<script>
+    /* DEBUGGING/DEVELOPMENT with the associated div this
+     * allows us to dynamically create topics and try them out
+     */
+    var topicTester = document.getElementById("topicTester");
+    topicTester.addEventListener("click", function (e) {
+        var topicElement = document.getElementById("topic");
+        var dataElement = document.getElementById("data");
+        wapi.publish(topicElement.value, dataElement.value);
+    });
+</script>
+<script>
+    var dispatchEvents = document.getElementById("dispatchid");
+    dispatchEvents.addEventListener("click", function (e) {
+        eventMonitor.toggleDispatching();
+    });
+
+</script>
+<script src="supportJS/profiler.js"></script>
+<script src="supportJS/timer.js"></script>
+<script src="supportJS/pause.js"></script>
+<script src="supportJS/focus.js"></script>
+<script src="supportJS/tracker.js"></script>
+
+<script src="wapievent/subscribeEvents.js"></script>
+<script src="wapievent/monitorEvents.js"></script>
+</body>
+</html>

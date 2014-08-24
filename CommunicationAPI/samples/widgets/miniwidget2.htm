@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mini Widget</title>
+
+    <script src="../../wapi/widget_api.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/status.css">
+    <style>
+        #timer {
+            text-align: center;
+            font-size: 36px;
+            margin: 20px;
+            border: 1px solid blue;
+        }
+    </style>
+</head>
+<body>
+<div id="source">src</div>
+<div id="status">No status</div>
+<div id="timer"></div>
+<div id="date"></div>
+<div>
+    <label>Message:</label>
+    <input id="unsubscribe" type="button" name="unsubscribe" value="Unsubscribe">
+</div>
+
+<script src="../supportJS/timer.js"></script>
+<script src="../supportJS/pause.js"></script>
+<script>
+    var data = document.getElementById("date");
+
+    function handleData(msg) {
+        data.innerHTML = msg;
+    }
+
+    wapi.subscribe("data", handleData);
+
+    wapi.subscribe("event", function (msg) {
+        var e = document.getElementById("status");
+        e.innerHTML = "Topic: [event] " + msg;
+    });
+
+    var subscribed = true;
+    var button = document.getElementById("unsubscribe");
+    button.addEventListener("click", function (e) {
+        if (subscribed === true)
+        {
+            subscribed = false;
+            button.setAttribute("value", "Subscribe");
+            wapi.unsubscribe("sysPause", handlePause);
+        }
+        else
+        {
+            subscribed = true;
+            button.setAttribute("value", "Unsubscribe");
+            wapi.subscribe("sysPause", handlePause);
+        }
+    });
+
+</script>
+</body>
+</html>
