@@ -60,14 +60,14 @@
     });
 
 
-    var intervalID2 = window.setInterval(function() {
-	    if (ackReceived === 1 && echoReceived === 1)
-	    {
-		    window.clearInterval(intervalID2);
-		    assertEquals(1, ackReceived);
-		    assertEquals(1, echoReceived);
-		    completedTest();		    
-	    }
+    var intervalID2 = window.setInterval(function () {
+        if (ackReceived === 1 && echoReceived === 1)
+        {
+            window.clearInterval(intervalID2);
+            assertEquals(1, ackReceived);
+            assertEquals(1, echoReceived);
+            completedTest();
+        }
 
     }, 100);
 </script>

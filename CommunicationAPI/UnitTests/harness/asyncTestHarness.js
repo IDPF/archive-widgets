@@ -25,7 +25,7 @@ var unhandledRejections;
 
 
 function setUpPage(opt_value) {
-	asyncTestCase.stepTimeout = opt_value ? opt_value : 3000;
+    asyncTestCase.stepTimeout = opt_value ? opt_value : 3000;
 }
 
 

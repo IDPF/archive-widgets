@@ -17,7 +17,7 @@
  *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -27,8 +27,8 @@
  * TODO:
  *     1. [fixed] This code broadcasts to all nodes/widgets in the hierarchy,
  *        we need to revisit strategies to optimize this.
- *     2. Encapsulate code
- *     3. Clean up signatures
+ *     2. [fixed] Encapsulate code
+ *     3. [~fixed]Clean up signatures
  *     4. Get naming right
  *     5. Determine if we have timing issues
  */
@@ -37,7 +37,15 @@
 (function () {
 
     //<editor-fold desc="DEBUGGING">
-    var DEBUG = true;
+    /* TODO: fix */
+    var DEBUG = (document.URL.slice(document.URL.indexOf("?") + 1).indexOf("DEBUG") > -1);
+
+    /**
+     * Turn console.log spew on or off.
+     * @type {boolean}
+     * @private
+     */
+    var verbose_ = false;
 
     /**
      * Assertion testing function.
@@ -63,17 +71,10 @@
      * Message counter.
      * @type {number}
      */
-    var counter = 0;
+    var counter_ = 0;
 
-    /**
-     * Turn console.log spew on or off.
-     * @type {boolean}
-     * @private
-     */
-    var verbose_ = false;
     /* end debugging stuff */
     //</editor-fold>
-
 
     //<editor-fold desc="IDness">
     /**
@@ -96,7 +97,8 @@
     var widgetID_ = generateUUID_();
     //</editor-fold>
 
-
+    //<editor-fold desc="Widget Node">
+    /* TODO: do we need to let the parent know what the path is to a particular widget? */
     /**
      * Constructor for widgetNode
      * @param {string} id -.
@@ -121,12 +123,12 @@
          */
         this.url_ = url;
     };
-
+    //</editor-fold>
 
     //<editor-fold desc="Topic Message">
+
     /**
-     * The message used to pass topics between components/windows.
-     * TODO: the schema of this has to be in spec.
+     * The object used to pass topics between components/windows.
      * @param {string} method -.
      * @param {string} topicName -.
      * @param {boolean} capture -.
@@ -139,21 +141,21 @@
 
 
     /**
-     * Constructor for messages.
+     * TODO: the schema of this has to be in spec.
      * @param {string} method -.
      * @param {string} topicName -.
      * @param {boolean} capture -.
-     * @param {Object | string | undefined} opt_data
+     * @param {(Object | string)=} opt_data
      */
     TopicMessage_.prototype.init = function (method, topicName, capture, opt_data) {
+
         this.type_ = "message";
 
         this.widgetSourceID_ = widgetID_;
-        this.widgetPath_ = [];
+
         this.id = generateUUID_();
 
         this.time = +new Date();
-        this.counter = ++counter;
 
         this.capture = capture;
 
@@ -165,10 +167,18 @@
             topic: topicName,
             topicData: opt_data
         };
+
+        this.widgetPath_ = [];
+
+        if (DEBUG)
+        {
+            //noinspection JSUnusedGlobalSymbols
+            this.counter_ = ++counter_;
+        }
     };
     //</editor-fold>
 
-
+    //<editor-fold desc="Topic Dictionary & Dictionary Entry">
     /**
      *
      * @type {{}}
@@ -177,12 +187,11 @@
     var TopicMap_ = {};
 
 
-    //<editor-fold desc="Topic Handler">
     /**
      * Constructor for topic handler.
      * @constructor
      */
-    var TopicHandler_ = function () {
+    var TopEntry_ = function () {
         /**
          * array of iframe windows, these are windows
          * that we dispatch topics to.
@@ -210,7 +219,7 @@
     /**
      * @param {function} f new handler.
      */
-    TopicHandler_.prototype.addHandler = function (f) {
+    TopEntry_.prototype.addHandler = function (f) {
         this.handlers_.push(f);
     };
 
@@ -219,7 +228,7 @@
      * Remove the function handler from this topic
      * @param {function} f new handler.
      */
-    TopicHandler_.prototype.removeHandler = function (f) {
+    TopEntry_.prototype.removeHandler = function (f) {
         var i = this.handlers_.indexOf(f);
         if (i >= 0)
         {
@@ -231,7 +240,7 @@
     /**
      * @param {TopicMessage_} message to publish.
      */
-    TopicHandler_.prototype.callHandlers = function (message) {
+    TopEntry_.prototype.callHandlers = function (message) {
         for (var i = 0; i < this.handlers_.length; i++)
         {
             if (message.widgetSourceID_ != widgetID_)
@@ -244,7 +253,7 @@
     /**
      * @param {TopicMessage_} message to publish.
      */
-    TopicHandler_.prototype.callHandlers2 = function (message) {
+    TopEntry_.prototype.callHandlers2 = function (message) {
         for (var i = 0; i < this.handlers_.length; i++)
         {
             if (message.widgetSourceID_ != widgetID_)
@@ -258,7 +267,7 @@
      * Does the TopicHandler have any handlers
      * @return {boolean}
      */
-    TopicHandler_.prototype.anyHandlers = function () {
+    TopEntry_.prototype.anyHandlers = function () {
         return this.handlers_.length > 0;
     };
 
@@ -268,7 +277,7 @@
      * @param {Window} win subscriber.
      * @param {string} widgetid -.
      */
-    TopicHandler_.prototype.addSubscriber = function (win, widgetid) {
+    TopEntry_.prototype.addSubscriber = function (win, widgetid) {
         /**
          * The window can only exist in the current windows context,
          * so no need to protect against duplicate subscribers,
@@ -286,7 +295,7 @@
      * Remove the child window as a subscriber to this topic.
      * @param {Window} win subscriber.
      */
-    TopicHandler_.prototype.removeSubscriber = function (win) {
+    TopEntry_.prototype.removeSubscriber = function (win) {
         // Find and remove item from an array
         var i = this.subscribers_.indexOf(win);
         if (i >= 0)
@@ -300,7 +309,7 @@
      * Call all my subscribers
      * @param {TopicMessage_} message -.
      */
-    TopicHandler_.prototype.callSubscribers = function (message) {
+    TopEntry_.prototype.callSubscribers = function (message) {
         for (var i = 0; i < this.subscribers_.length; i++)
         {
             /* TODO: security implications of star? */
@@ -313,11 +322,10 @@
      * Does the TopicHandler have any subscribers
      * @return {boolean}
      */
-    TopicHandler_.prototype.anySubscribers = function () {
+    TopEntry_.prototype.anySubscribers = function () {
         return this.subscribers_.length > 0;
     };
     //</editor-fold>
-
 
     //<editor-fold desc="Internal implementation">
     /**
@@ -431,8 +439,34 @@
         return subscribedEvents;
     }
 
-    //</editor-fold>
+    /**
+     * TODO: is this debug only?
+     * Returns an array of non system subscriptions
+     * @returns {Array}
+     */
+    function subscribedTopics_() {
+        /* There are a few subscriptions are all components
+         * subscribe to at startup, so no need to broadcast
+         * these, we will remove.
+         */
+        var sysLevelSubscriptions = ["sysReady", "sysShutdown", "sysEventSubscribe", "sysEventUnsubscribe"];
 
+        var subscriptions = [];
+
+        for (var key in TopicMap_)
+        {
+            if (TopicMap_.hasOwnProperty(key))
+            {
+                if (sysLevelSubscriptions.indexOf(key) < 0)
+                {
+                    subscriptions.push(key);
+                }
+            }
+        }
+        return subscriptions;
+    }
+
+    //</editor-fold>
 
     //<editor-fold desc="Events">
 
@@ -459,9 +493,10 @@
      * @param {!Event} e
      */
     BrowserEvent.prototype.init = function (e) {
-        // TODO: Decide if assigning undefined properties is bad. It means that
-        // this.hasOwnProperty(X) will be true even if e.hasOwnProperty(X) is
-        // false.
+        /* TODO: Decide if assigning undefined properties is bad. It means that
+         *this.hasOwnProperty(X) will be true even if e.hasOwnProperty(X) is
+         * false.
+         */
         this.type = e.type;
         this.screenX = e.screenX;
         this.screenY = e.screenY;
@@ -474,11 +509,12 @@
         this.shiftKey = e.shiftKey;
         this.metaKey = e.metaKey;
 
-        // TODO: Test this.
+        /* TODO: Test this. */
         if (e.touches)
         {
-            // TODO: Decide if we want to rely on Array.prototype.map. If not,
-            // we should provide an implementation.
+            /* TODO: Decide if we want to rely on Array.prototype.map. If not,
+             * we should provide an implementation.
+             */
             this.touches = e.touches.map(function (coord) {
                 return {screenX: coord.screenX, screenY: coord.screenY};
             });
@@ -509,7 +545,7 @@
     ];
 
     /**
-     * TODO: Consider polyfill for forEach.
+     * TODO: Consider poly-fill for forEach.
      */
     publishableBrowserEvents_.forEach(function (eventName) {
         eventPublishDictionary_[eventName] = {
@@ -520,7 +556,6 @@
         }
     });
     //</editor-fold>
-
 
     //<editor-fold desc="Public API">
     var wapi = {
@@ -536,7 +571,7 @@
 
         if (!TopicMap_[topicName])
         {
-            TopicMap_[topicName] = new TopicHandler_(topicName);
+            TopicMap_[topicName] = new TopEntry_(topicName);
         }
         TopicMap_[topicName].addHandler(func);
 
@@ -586,30 +621,6 @@
         win.postMessage(new TopicMessage_("methodPublish", topicName, false, data), "*");
     };
 
-    /**
-     * Returns an array of non system subscriptions
-     * @returns {Array}
-     */
-    wapi.subscriptions = function () {
-        // there are a few subscriptions are all components
-        // subscribe to at startup, so no need to broadcast
-        // these, we will remove.
-        var sysLevelSubscriptions = ["sysReady", "sysShutdown", "sysEventSubscribe", "sysEventUnsubscribe"];
-
-        var subscriptions = [];
-
-        for (var key in TopicMap_)
-        {
-            if (TopicMap_.hasOwnProperty(key))
-            {
-                if (sysLevelSubscriptions.indexOf(key) < 0)
-                {
-                    subscriptions.push(key);
-                }
-            }
-        }
-        return subscriptions;
-    };
     //</editor-fold>
 
     //<editor-fold desc="Subscriptions">
@@ -627,12 +638,15 @@
             ids.push(msg.widgetPath_[i].widgetid_);
         }
 
-        if (verbose_)
+        if (DEBUG && verbose_)
         {
             window.console.log(window.document.URL + "-" + widgetID_ + "   received ready: " + ids.join(", "));
         }
         /* end provisional, may not need it */
 
+        /* tell the recently loaded widget (and all others) what events
+         * it should publish
+         */
         var events = subscribedEvents_();
         if (events.length)
         {
@@ -644,7 +658,7 @@
      * Shutdown - is
      */
     wapi.subscribe("sysShutdown", function (msg) {
-        if (verbose_)
+        if (DEBUG && verbose_)
         {
             window.console.log("sysShutdown: " + msg);
         }
@@ -658,7 +672,7 @@
         /**
          * Adds listener for events and then propagates those events
          * to the parent window
-         * @param {Array.<string>} events to propagte.
+         * @param {Array.<string>} events to propagate.
          */
         function publishEvents(events) {
             for (var i = 0; i < events.length; i++)
@@ -676,7 +690,7 @@
         }
 
 
-        if (verbose_)
+        if (DEBUG && verbose_)
         {
             window.console.log(window.document.URL + " - eventSubscribe: " + msg);
         }
@@ -689,6 +703,10 @@
         {
             publishEvents([msg]);
         }
+        else
+        {
+            assert_(false, "unknown event data");
+        }
     });
 
     /**
@@ -699,7 +717,7 @@
          * Removes listener for events
          * @param {Array.<string>} events to remove.
          */
-        function unpublishEvents(events) {
+        function unsubscribeEvents(events) {
             for (var i = 0; i < events.length; i++)
             {
                 var key = events[i];
@@ -715,26 +733,25 @@
         }
 
 
-        if (verbose_)
+        if (DEBUG && verbose_)
         {
             window.console.log(window.document.URL + " - eventUnsubscribe: " + msg);
         }
 
         if (msg instanceof Array)
         {
-            unpublishEvents(msg);
+            unsubscribeEvents(msg);
         }
         else if (typeof(msg) === "string")
         {
-            unpublishEvents([msg]);
+            unsubscribeEvents([msg]);
         }
         else
         {
-            assert_(false, "unknown event type");
+            assert_(false, "unknown event data");
         }
     });
     //</editor-fold>
-
 
     //<editor-fold desc="Event Listeners">
     /**
@@ -753,7 +770,7 @@
 
             if (!TopicMap_[topicName])
             {
-                TopicMap_[topicName] = new TopicHandler_();
+                TopicMap_[topicName] = new TopEntry_();
             }
             TopicMap_[topicName].addSubscriber(srcWin, srcWidgetID);
             if (window.parent != window)
@@ -768,7 +785,7 @@
          * @param {Window} srcWin -.
          * @param {TopicMessage_} message -.
          */
-        function methodUnscribe(srcWin, message) {
+        function methodUnsubscribe(srcWin, message) {
             var topicName = message.payload.topic;
 
             if (TopicMap_[topicName])
@@ -813,10 +830,11 @@
 
         if (event.data.type_ === "message")
         {
-            if (verbose_)
+            if (DEBUG && verbose_)
             {
                 window.console.log(document.URL + " - " + event.data.method + ": [" + event.data.payload.topic + "]");
             }
+
             switch (event.data.method)
             {
                 case "methodSubscribe":
@@ -824,7 +842,7 @@
                     break;
 
                 case "methodUnsubscribe":
-                    methodUnscribe(event.source, event.data);
+                    methodUnsubscribe(event.source, event.data);
                     break;
 
                 case "methodPublish":
@@ -836,7 +854,7 @@
                     break;
 
                 default:
-                    window.console.error("unknown method");
+                    assert_(false, "unknown data method");
                     break;
             }
         }
@@ -863,22 +881,21 @@
          * just my ancestors.
          */
 
-        if (verbose_)
+        if (DEBUG && verbose_)
         {
-            window.console.log("*************unload: " + wapi.subscriptions().join(",") + "   " + subscribedEvents_().join(","));
+            window.console.log("*************unload: " + subscribedTopics_().join(",") + "   " + subscribedEvents_().join(","));
         }
 
-        //unpublishEvents_(subscribedEvents_());
+        /* de-registerEvents_(subscribedEvents_()); */
 
         publishToParent_("sysShutdown", document.URL);
     }, false);
     //</editor-fold>
 
-
     //<editor-fold desc="DEBUGGING">
     if (DEBUG)
     {
-        wapi.dbgANote = "Any property starting with dbg should be removed in a release build";
+        wapi.dbgANote = "Any property starting with dbg will be removed in a release build";
 
         /**
          * Debugging - call this from the javascript console window to see
@@ -900,12 +917,15 @@
             return publishedEvents;
         }
 
+
         verbose_ = true;
 
         wapi.dbgTopicMap = TopicMap_;
         wapi.dbgVerbose = verbose_;
-        wapi.dbgSubscribedEvents = subscribedEvents_;
         wapi.dbgAssert = assert_;
+
+        wapi.dbgSubscribedEvents = subscribedEvents_;
+        wapi.dbgSubscribedTopics = subscribedTopics_;
 
         wapi.dbgPublishedEvents = dbgPublishedEvents_;
     }

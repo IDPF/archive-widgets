@@ -17,7 +17,14 @@ var _allTests = [
     "testCommunication/root.html",
     "testCommunicationHierarchy/root.html",
     "testHandlers/root.html",
-		"testSysPause/root.html"
+    "testSysPause/root.html",
+    "testDomainIsolation/root.html",
+    "testEventPropagation/root.html?DEBUG",
+    "testCommunication/root.html?DEBUG",
+    "testCommunicationHierarchy/root.html?DEBUG",
+    "testHandlers/root.html?DEBUG",
+    "testSysPause/root.html?DEBUG",
+    "testDomainIsolation/root.html?DEBUG"
 ];
 
 var googTests = [
