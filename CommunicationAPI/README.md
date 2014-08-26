@@ -16,15 +16,28 @@ in domains preventing XSS.
         4. Understand performance characteristics of postMessage vs. dispatchEvent for
            propagating events.
 
+### Installation
+    Get a recent version of node.
+    cd CommunicationAPI
+    npm install
+
+    There are some issues on windows running npm, among them:
+
+        http://stackoverflow.com/questions/25093276/nodejs-windows-error-enoent-stat-c-users-rt-appdata-roaming-npm
+        
+        On a clean install of windows i have found npm install to fail, 
+          but npm install napa, followed by npm install to work.
 ### Samples
     to run:
         node server.js - starts up a local http server on 8080
-        load localhost:8080/parent.html - to see a set of widgets that are communicating
-           with the code in widget_api.js
+	index.html presents some choices.
 
     the samples are a work in progress...
 
-    caveat emptor - the samples has primarily been tested on mac chrome 35
+
+### Units Tests
+      have been run on most of the popular recent browsers
+      some unit tests require additions to host file 
 
 ### Coding standards
 
