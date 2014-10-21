@@ -35,12 +35,19 @@
             font-family: Consolas, sans-serif;
             margin: 10px;
         }
+
+        #handler {
+            position: absolute;
+            top: 70px;
+            left: 144px;
+        }
     </style>
 </head>
 <body>
 <div id="source">src</div>
 <div id="status">No status</div>
 <div id="focus_status">blurred</div>
+<div id="handler" tabindex="1">This area swallows keyup events</div>
 <!--iframe epub:type="widget"class="widget" id="childIframeA" src="http://acmewidget.cr:8080/childEventA.html"></iframe-->
 <iframe epub:type="widget" class="widget" id="childIframeA"
         src="widgets/childEventA.html"></iframe>
@@ -56,6 +63,27 @@
     //        e.preventDefault();
     //    }, false);
 
+    // Add a flag indicating we've handled this event.
+    document.getElementById('handler').addEventListener('keyup', function (e) {
+        e.esc_handled = true;
+    });
+
+    // Publish keyup events at the window level.
+    window.addEventListener("keyup", function (e) {
+        wapi.publish('events', {
+            type: e.type,
+            screenX: e.screenX,
+            screenY: e.screenY,
+            button: e.button,
+            keyCode: e.keyCode,
+            charCode: e.charCode,
+            ctrlKey: e.ctrlKey,
+            altKey: e.altKey,
+            shiftKey: e.shiftKey,
+            metaKey: e.metaKey,
+            esc_handled: e.esc_handled
+        });
+    }, false);
 </script>
 <script src="supportJS/timer.js"></script>
 <script src="supportJS/pause.js"></script>

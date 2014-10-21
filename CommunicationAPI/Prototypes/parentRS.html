@@ -418,6 +418,20 @@
         }
     }, false);
 
+    // Listen for published events.
+    wapi.subscribe('events', function (we) {
+        // Ignore handled events.
+        if (we.esc_handled) return;
+
+        if (we.keyCode === 37 /* Left arrow key */) {
+            pagenum -= 1;
+            wapi.publish("rsdirective", "prev page: " + pagenum);
+        } else if (we.keyCode === 39 /* Right arrow key */) {
+            pagenum += 1;
+            wapi.publish("rsdirective", "next page: " + pagenum);
+        }
+    });
+
     var iframeButton = document.getElementById("newiframe");
     iframeButton.addEventListener("click", function (e) {
         var newiframe = document.getElementById("epubdoc2");
