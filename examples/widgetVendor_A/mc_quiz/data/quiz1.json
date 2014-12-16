@@ -1,0 +1,110 @@
+{
+	"title" : "So you think you know Batman? Try your knowledge!",
+	"questions" : [
+		{
+			"text" : "What is the original comic book that Batman appeared in?",
+			"answers" : [
+				{
+					"text" : "Legends of the Dark Knight",
+					"correct" : "false"
+				},
+				{
+					"text" : "Batman",
+					"correct" : "false"
+				},
+				{
+					"text" : "Detective Comics",
+					"correct" : "true"
+				},
+				{
+					"text" : "Batman and Robin",
+					"correct" : "false"
+				}
+			]
+		},
+		{
+			"text" : "According the comic book anthology, the Joker was originally called:",
+			"answers" : [
+				{
+					"text" : "Jack Napier",
+					"correct" : "false"
+				},
+				{
+					"text" : "Jeremy Irons",
+					"correct" : "false"
+				},
+				{
+					"text" : "The Clown",
+					"correct" : "false"
+				},
+				{
+					"text" : "The Red Hood",
+					"correct" : "true"
+				}
+			]
+		},
+		{
+			"text" : "The Joker beat this man to death with a crowbar, in the 1988 comic 'A Death in the Family'.",
+			"answers" : [
+				{
+					"text" : "Barbara Gordon",
+					"correct" : "false"
+				},
+				{
+					"text" : "Jason Todd",
+					"correct" : "true"
+				},
+				{
+					"text" : "Dick Grayson",
+					"correct" : "false"
+				},
+				{
+					"text" : "Harvey Dent",
+					"correct" : "false"
+				}
+			]
+		},
+		{
+			"text" : "Barbara Gordon went on to become a superhero known as the Oracle, but she started out as:",
+			"answers" : [
+				{
+					"text" : "Batgirl",
+					"correct" : "true"
+				},
+				{
+					"text" : "Nighthawk",
+					"correct" : "false"
+				},
+				{
+					"text" : "Harley Quinn",
+					"correct" : "false"
+				},
+				{
+					"text" : "Poison Ivy",
+					"correct" : "false"
+				}
+			]
+		},
+		{
+			"text" : "The first Robin, Dick Grayson, started out as a circus performer. When he grew up and left Batman's side, he became known as:",
+			"answers" : [
+				{
+					"text" : "Azrael",
+					"correct" : "false"
+				},
+				{
+					"text" : "Bane",
+					"correct" : "false"
+				},
+				{
+					"text" : "Nightwing",
+					"correct" : "true"
+				},
+				{
+					"text" : "Green Arrow",
+					"correct" : "false"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html class="no-js">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+		<title>Multiple Choice Quiz</title>
+		
+		<script src="../shared/javascript/modernizr.js"></script>
+		<script src="../shared/javascript/underscore.js"></script>
+		<script src="../shared/javascript/jquery.js"></script>
+		<script src="../shared/javascript/bootstrap.js"></script>
+		<script src="../../../CommunicationAPI/wapi/widget_api.js"></script>
+		<script src="javascript/main.js"></script>
+		
+		<link href="../shared/css/bootstrap.css" rel="stylesheet" />
+		<link href="css/mc_quiz.css" rel="stylesheet" />
+		
+	</head>
+	<body>
+		
+		<script id="template" type="text/template">
+			<h1><%= title %></h1>
+			<ol class="questions">
+				<% for(var key in questions){ %>
+					<li class="question">
+						<p><%= questions[key].text %></p>
+						<ul class="answers">
+							<% for(var key2 in questions[key].answers){ %>
+								<li class="answer">
+									<% questions[key].answers[key2].id = genUUID() %>
+									<input type="radio" id="<%= questions[key].answers[key2].id %>" name="question<%= key %>" />
+									<label for="<%= questions[key].answers[key2].id %>">
+										<%= questions[key].answers[key2].text %>
+									</label>
+								</li>
+							<% } %>
+						</ul>
+					</li>
+				<% } %>
+			</ol>
+			<div class="buttons">
+				<button class="btn btn-primary" id="checkAnswers">Check your answers</button>
+			</div>
+		</script>
+		
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="attach-point">
+						<p>your reading system does not support javascript</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+</html>

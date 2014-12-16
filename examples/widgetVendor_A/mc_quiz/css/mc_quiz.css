@@ -1,0 +1,26 @@
+.answers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.answers .answer > input {
+    margin-right: 20px;
+}
+
+.question {
+    margin-bottom: 20px;
+}
+
+.answer.correct {
+    color: green;
+}
+.answer.wrong {
+    color: red;
+}
+
+.score {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
