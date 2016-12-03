@@ -29,6 +29,9 @@ in domains preventing XSS.
           but npm install napa, followed by npm install to work.
 ### Samples
     to run:
+        If this is the first time running the widgets, install connect, this is
+        a one time process.
+        **npm install connect**
         node server.js - starts up a local http server on 8080
 	index.html presents some choices.
 
